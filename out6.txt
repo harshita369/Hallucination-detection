@@ -1,0 +1,726 @@
+ python3 06_train_corrector.py
+============================================================
+  Hallucination Detection — Phase 6 Correction Engine
+============================================================
+
+✅ GPU : NVIDIA GeForce RTX 3050 Laptop GPU
+   VRAM: 4.0 GB
+   Device: cuda
+
+--- Loading correction dataset ---
+   Samples capped at: 10000
+   Train : 9000 samples
+   Val   : 1000 samples
+
+   Sample correction pair:
+     Wrong  : Energy drinks like Red Bull are causing children to have erratic heartbeats and ...
+     Correct: Children drink 'excessive' amounts of energy drinks, teachers' union claim. Drin...
+
+--- Loading T5 tokenizer ---
+   Tokenizer loaded
+
+--- DataLoaders ready ---
+   Train batches : 9000
+   Val batches   : 500
+
+--- Loading Flan-T5-base model ---
+   (downloads ~250MB on first run, cached after)
+
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 190/190 [00:00<00:00, 2109.73it/s]
+The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+   Total parameters    : 76,961,152
+   Trainable parameters: 76,961,152
+
+--- Training schedule ---
+   Epochs          : 3
+   Total steps     : 13500
+   Warmup steps    : 1350
+   Effective batch : 2
+   Learning rate   : 0.0003
+
+
+============================================================
+  CORRECTION ENGINE TRAINING STARTED
+============================================================
+
+============================================================
+  Epoch 1 / 3
+============================================================
+============================================================
+  Hallucination Detection — Phase 6 Correction Engine
+============================================================
+
+✅ GPU : NVIDIA GeForce RTX 3050 Laptop GPU
+   VRAM: 4.0 GB
+   Device: cuda
+
+--- Loading correction dataset ---
+   Samples capped at: 10000
+   Train : 9000 samples
+   Val   : 1000 samples
+
+   Sample correction pair:
+     Wrong  : Energy drinks like Red Bull are causing children to have erratic heartbeats and ...
+     Correct: Children drink 'excessive' amounts of energy drinks, teachers' union claim. Drin...
+
+--- Loading T5 tokenizer ---
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+   Tokenizer loaded
+
+--- DataLoaders ready ---
+   Train batches : 9000
+   Val batches   : 500
+
+--- Loading Flan-T5-base model ---
+   (downloads ~250MB on first run, cached after)
+
+Loading weights: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 190/190 [00:00<00:00, 13083.74it/s]
+The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+   Total parameters    : 76,961,152
+   Trainable parameters: 76,961,152
+
+--- Training schedule ---
+   Epochs          : 3
+   Total steps     : 13500
+   Warmup steps    : 1350
+   Effective batch : 2
+   Learning rate   : 0.0003
+
+`use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+   Epoch 1 | Step  100/9000 | Loss: 3.2198 | LR: 1.11e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step  200/9000 | Loss: 2.9058 | LR: 2.22e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step  300/9000 | Loss: 2.7328 | LR: 3.33e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step  400/9000 | Loss: 2.6425 | LR: 4.44e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step  500/9000 | Loss: 2.6037 | LR: 5.56e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step  600/9000 | Loss: 2.5095 | LR: 6.67e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step  700/9000 | Loss: 2.4619 | LR: 7.78e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step  800/9000 | Loss: 2.4227 | LR: 8.89e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step  900/9000 | Loss: 2.3646 | LR: 1.00e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 1000/9000 | Loss: 2.3140 | LR: 1.11e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 1100/9000 | Loss: 2.2832 | LR: 1.22e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 1200/9000 | Loss: 2.2541 | LR: 1.33e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 1300/9000 | Loss: 2.2328 | LR: 1.44e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 1400/9000 | Loss: 2.2123 | LR: 1.56e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 1500/9000 | Loss: 2.2024 | LR: 1.67e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 1600/9000 | Loss: 2.1859 | LR: 1.78e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 1700/9000 | Loss: 2.1656 | LR: 1.89e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 1800/9000 | Loss: 2.1542 | LR: 2.00e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 1900/9000 | Loss: 2.1451 | LR: 2.11e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 2000/9000 | Loss: 2.1439 | LR: 2.22e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 2100/9000 | Loss: 2.1314 | LR: 2.33e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 2200/9000 | Loss: 2.1224 | LR: 2.44e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 2300/9000 | Loss: 2.1217 | LR: 2.56e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 2400/9000 | Loss: 2.1230 | LR: 2.67e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 2500/9000 | Loss: 2.1127 | LR: 2.78e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 2600/9000 | Loss: 2.1103 | LR: 2.89e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 2700/9000 | Loss: 2.1138 | LR: 3.00e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 2800/9000 | Loss: 2.1071 | LR: 2.99e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 2900/9000 | Loss: 2.1021 | LR: 2.98e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 3000/9000 | Loss: 2.0946 | LR: 2.96e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 3100/9000 | Loss: 2.0940 | LR: 2.95e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 3200/9000 | Loss: 2.0947 | LR: 2.94e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 3300/9000 | Loss: 2.0972 | LR: 2.93e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 3400/9000 | Loss: 2.0899 | LR: 2.91e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 3500/9000 | Loss: 2.0881 | LR: 2.90e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 3600/9000 | Loss: 2.0863 | LR: 2.89e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 3700/9000 | Loss: 2.0829 | LR: 2.88e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 3800/9000 | Loss: 2.0906 | LR: 2.86e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 3900/9000 | Loss: 2.0870 | LR: 2.85e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 4000/9000 | Loss: 2.0867 | LR: 2.84e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 4100/9000 | Loss: 2.0879 | LR: 2.83e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 4200/9000 | Loss: 2.0897 | LR: 2.81e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 4300/9000 | Loss: 2.0869 | LR: 2.80e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 4400/9000 | Loss: 2.0851 | LR: 2.79e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 4500/9000 | Loss: 2.0838 | LR: 2.78e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 4600/9000 | Loss: 2.0875 | LR: 2.77e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 4700/9000 | Loss: 2.0811 | LR: 2.75e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 4800/9000 | Loss: 2.0787 | LR: 2.74e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 4900/9000 | Loss: 2.0776 | LR: 2.73e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 5000/9000 | Loss: 2.0738 | LR: 2.72e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 5100/9000 | Loss: 2.0740 | LR: 2.70e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 5200/9000 | Loss: 2.0677 | LR: 2.69e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 5300/9000 | Loss: 2.0666 | LR: 2.68e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 5400/9000 | Loss: 2.0648 | LR: 2.67e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 5500/9000 | Loss: 2.0619 | LR: 2.65e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 5600/9000 | Loss: 2.0617 | LR: 2.64e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 5700/9000 | Loss: 2.0589 | LR: 2.63e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 5800/9000 | Loss: 2.0558 | LR: 2.62e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 5900/9000 | Loss: 2.0535 | LR: 2.60e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 6000/9000 | Loss: 2.0499 | LR: 2.59e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 6100/9000 | Loss: 2.0504 | LR: 2.58e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 6200/9000 | Loss: 2.0471 | LR: 2.57e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 6300/9000 | Loss: 2.0405 | LR: 2.56e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 6400/9000 | Loss: 2.0385 | LR: 2.54e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 6500/9000 | Loss: 2.0361 | LR: 2.53e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 6600/9000 | Loss: 2.0361 | LR: 2.52e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 6700/9000 | Loss: 2.0321 | LR: 2.51e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 6800/9000 | Loss: 2.0319 | LR: 2.49e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 6900/9000 | Loss: 2.0304 | LR: 2.48e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 7000/9000 | Loss: 2.0310 | LR: 2.47e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 7100/9000 | Loss: 2.0270 | LR: 2.46e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 7200/9000 | Loss: 2.0241 | LR: 2.44e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 7300/9000 | Loss: 2.0224 | LR: 2.43e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 7400/9000 | Loss: 2.0217 | LR: 2.42e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 7500/9000 | Loss: 2.0190 | LR: 2.41e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 7600/9000 | Loss: 2.0192 | LR: 2.40e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 7700/9000 | Loss: 2.0158 | LR: 2.38e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 7800/9000 | Loss: 2.0165 | LR: 2.37e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 7900/9000 | Loss: 2.0156 | LR: 2.36e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 8000/9000 | Loss: 2.0132 | LR: 2.35e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 8100/9000 | Loss: 2.0108 | LR: 2.33e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 8200/9000 | Loss: 2.0076 | LR: 2.32e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 8300/9000 | Loss: 2.0090 | LR: 2.31e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 8400/9000 | Loss: 2.0087 | LR: 2.30e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 8500/9000 | Loss: 2.0052 | LR: 2.28e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 8600/9000 | Loss: 2.0059 | LR: 2.27e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 8700/9000 | Loss: 2.0040 | LR: 2.26e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 8800/9000 | Loss: 2.0051 | LR: 2.25e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 8900/9000 | Loss: 2.0041 | LR: 2.23e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 1 | Step 9000/9000 | Loss: 2.0020 | LR: 2.22e-04
+             GPU memory: 0.96/4.0 GB
+
+  Results — Epoch 1:
+    Train Loss : 2.0020
+    Val Loss   : 2.0360
+    ROUGE-1    : 42.94
+    ROUGE-2    : 19.24
+    ROUGE-L    : 35.54
+
+  Sample corrections (Epoch 1):
+    Generated : Steve Esmond, his teenage sons and the teens' mother fell ill more than two weeks ago in St. John. T
+    Reference : A Delaware family becomes ill at the Sirenusa resort in the U.S. Virgin Islands. Preliminary EPA res
+
+    Generated : John R. Lind, 34, admitted to tainting Pat Maahs' drink with his semen while working together at Bei
+    Reference : John R. Lind, 34, from New Brighton, Minnesota admitted to tainting drink. The bizarre act was part 
+
+Writing model shards: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  3.01it/s]
+  ✅ Best model saved
+
+============================================================
+  Epoch 2 / 3
+============================================================
+   Epoch 2 | Step  100/9000 | Loss: 1.9003 | LR: 2.21e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step  200/9000 | Loss: 1.7700 | LR: 2.20e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step  300/9000 | Loss: 1.7334 | LR: 2.19e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step  400/9000 | Loss: 1.6595 | LR: 2.17e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step  500/9000 | Loss: 1.5883 | LR: 2.16e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step  600/9000 | Loss: 1.5693 | LR: 2.15e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step  700/9000 | Loss: 1.6006 | LR: 2.14e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step  800/9000 | Loss: 1.5769 | LR: 2.12e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step  900/9000 | Loss: 1.5826 | LR: 2.11e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 1000/9000 | Loss: 1.5728 | LR: 2.10e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 1100/9000 | Loss: 1.5654 | LR: 2.09e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 1200/9000 | Loss: 1.5790 | LR: 2.07e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 1300/9000 | Loss: 1.5873 | LR: 2.06e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 1400/9000 | Loss: 1.5896 | LR: 2.05e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 1500/9000 | Loss: 1.5874 | LR: 2.04e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 1600/9000 | Loss: 1.6016 | LR: 2.02e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 1700/9000 | Loss: 1.5985 | LR: 2.01e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 1800/9000 | Loss: 1.6075 | LR: 2.00e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 1900/9000 | Loss: 1.6136 | LR: 1.99e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 2000/9000 | Loss: 1.6129 | LR: 1.98e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 2100/9000 | Loss: 1.6166 | LR: 1.96e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 2200/9000 | Loss: 1.6125 | LR: 1.95e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 2300/9000 | Loss: 1.6115 | LR: 1.94e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 2400/9000 | Loss: 1.6145 | LR: 1.93e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 2500/9000 | Loss: 1.6119 | LR: 1.91e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 2600/9000 | Loss: 1.6083 | LR: 1.90e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 2700/9000 | Loss: 1.6083 | LR: 1.89e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 2800/9000 | Loss: 1.6082 | LR: 1.88e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 2900/9000 | Loss: 1.6106 | LR: 1.86e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 3000/9000 | Loss: 1.6107 | LR: 1.85e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 3100/9000 | Loss: 1.6053 | LR: 1.84e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 3200/9000 | Loss: 1.6073 | LR: 1.83e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 3300/9000 | Loss: 1.6006 | LR: 1.81e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 3400/9000 | Loss: 1.5947 | LR: 1.80e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 3500/9000 | Loss: 1.5910 | LR: 1.79e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 3600/9000 | Loss: 1.5952 | LR: 1.78e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 3700/9000 | Loss: 1.5962 | LR: 1.77e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 3800/9000 | Loss: 1.5925 | LR: 1.75e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 3900/9000 | Loss: 1.5928 | LR: 1.74e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 4000/9000 | Loss: 1.5935 | LR: 1.73e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 4100/9000 | Loss: 1.5922 | LR: 1.72e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 4200/9000 | Loss: 1.5928 | LR: 1.70e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 4300/9000 | Loss: 1.5956 | LR: 1.69e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 4400/9000 | Loss: 1.5986 | LR: 1.68e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 4500/9000 | Loss: 1.6025 | LR: 1.67e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 4600/9000 | Loss: 1.6023 | LR: 1.65e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 4700/9000 | Loss: 1.6007 | LR: 1.64e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 4800/9000 | Loss: 1.5999 | LR: 1.63e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 4900/9000 | Loss: 1.6016 | LR: 1.62e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 5000/9000 | Loss: 1.6036 | LR: 1.60e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 5100/9000 | Loss: 1.6013 | LR: 1.59e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 5200/9000 | Loss: 1.6034 | LR: 1.58e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 5300/9000 | Loss: 1.6065 | LR: 1.57e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 5400/9000 | Loss: 1.6094 | LR: 1.56e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 5500/9000 | Loss: 1.6092 | LR: 1.54e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 5600/9000 | Loss: 1.6085 | LR: 1.53e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 5700/9000 | Loss: 1.6064 | LR: 1.52e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 5800/9000 | Loss: 1.6048 | LR: 1.51e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 5900/9000 | Loss: 1.6067 | LR: 1.49e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 6000/9000 | Loss: 1.6086 | LR: 1.48e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 6100/9000 | Loss: 1.6084 | LR: 1.47e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 6200/9000 | Loss: 1.6054 | LR: 1.46e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 6300/9000 | Loss: 1.6047 | LR: 1.44e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 6400/9000 | Loss: 1.6085 | LR: 1.43e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 6500/9000 | Loss: 1.6075 | LR: 1.42e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 6600/9000 | Loss: 1.6055 | LR: 1.41e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 6700/9000 | Loss: 1.6023 | LR: 1.40e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 6800/9000 | Loss: 1.6028 | LR: 1.38e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 6900/9000 | Loss: 1.6017 | LR: 1.37e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 7000/9000 | Loss: 1.6003 | LR: 1.36e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 7100/9000 | Loss: 1.6029 | LR: 1.35e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 7200/9000 | Loss: 1.6022 | LR: 1.33e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 7300/9000 | Loss: 1.6004 | LR: 1.32e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 7400/9000 | Loss: 1.5975 | LR: 1.31e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 7500/9000 | Loss: 1.5998 | LR: 1.30e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 7600/9000 | Loss: 1.5974 | LR: 1.28e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 7700/9000 | Loss: 1.5979 | LR: 1.27e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 7800/9000 | Loss: 1.6002 | LR: 1.26e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 7900/9000 | Loss: 1.5974 | LR: 1.25e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 8000/9000 | Loss: 1.5977 | LR: 1.23e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 8100/9000 | Loss: 1.5994 | LR: 1.22e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 8200/9000 | Loss: 1.5987 | LR: 1.21e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 8300/9000 | Loss: 1.5993 | LR: 1.20e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 8400/9000 | Loss: 1.5967 | LR: 1.19e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 8500/9000 | Loss: 1.5965 | LR: 1.17e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 8600/9000 | Loss: 1.5974 | LR: 1.16e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 8700/9000 | Loss: 1.5977 | LR: 1.15e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 8800/9000 | Loss: 1.5990 | LR: 1.14e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 8900/9000 | Loss: 1.6014 | LR: 1.12e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 2 | Step 9000/9000 | Loss: 1.6003 | LR: 1.11e-04
+             GPU memory: 0.96/4.0 GB
+
+  Results — Epoch 2:
+    Train Loss : 1.6003
+    Val Loss   : 2.0246
+    ROUGE-1    : 46.08
+    ROUGE-2    : 24.11
+    ROUGE-L    : 37.94
+
+  Sample corrections (Epoch 2):
+    Generated : Steve Esmond, his teenage sons and the teens' mother fell ill more than two weeks ago in St. John, w
+    Reference : A Delaware family becomes ill at the Sirenusa resort in the U.S. Virgin Islands. Preliminary EPA res
+
+    Generated : John R. Lind, 34, admitted on Thursday to tainting Pat Maahs' drink with his semen while they worked
+    Reference : John R. Lind, 34, from New Brighton, Minnesota admitted to tainting drink. The bizarre act was part 
+
+Writing model shards: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  2.53it/s]
+  ✅ Best model saved
+
+============================================================
+  Epoch 3 / 3
+============================================================
+   Epoch 3 | Step  100/9000 | Loss: 1.4909 | LR: 1.10e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step  200/9000 | Loss: 1.4003 | LR: 1.09e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step  300/9000 | Loss: 1.3654 | LR: 1.07e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step  400/9000 | Loss: 1.3156 | LR: 1.06e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step  500/9000 | Loss: 1.3645 | LR: 1.05e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step  600/9000 | Loss: 1.3488 | LR: 1.04e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step  700/9000 | Loss: 1.3239 | LR: 1.02e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step  800/9000 | Loss: 1.3231 | LR: 1.01e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step  900/9000 | Loss: 1.3445 | LR: 1.00e-04
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 1000/9000 | Loss: 1.3475 | LR: 9.88e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 1100/9000 | Loss: 1.3311 | LR: 9.75e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 1200/9000 | Loss: 1.3287 | LR: 9.63e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 1300/9000 | Loss: 1.3450 | LR: 9.51e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 1400/9000 | Loss: 1.3507 | LR: 9.38e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 1500/9000 | Loss: 1.3571 | LR: 9.26e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 1600/9000 | Loss: 1.3517 | LR: 9.14e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 1700/9000 | Loss: 1.3496 | LR: 9.01e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 1800/9000 | Loss: 1.3451 | LR: 8.89e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 1900/9000 | Loss: 1.3458 | LR: 8.77e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 2000/9000 | Loss: 1.3531 | LR: 8.64e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 2100/9000 | Loss: 1.3570 | LR: 8.52e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 2200/9000 | Loss: 1.3566 | LR: 8.40e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 2300/9000 | Loss: 1.3579 | LR: 8.27e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 2400/9000 | Loss: 1.3598 | LR: 8.15e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 2500/9000 | Loss: 1.3560 | LR: 8.02e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 2600/9000 | Loss: 1.3496 | LR: 7.90e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 2700/9000 | Loss: 1.3501 | LR: 7.78e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 2800/9000 | Loss: 1.3451 | LR: 7.65e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 2900/9000 | Loss: 1.3412 | LR: 7.53e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 3000/9000 | Loss: 1.3385 | LR: 7.41e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 3100/9000 | Loss: 1.3387 | LR: 7.28e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 3200/9000 | Loss: 1.3390 | LR: 7.16e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 3300/9000 | Loss: 1.3405 | LR: 7.04e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 3400/9000 | Loss: 1.3385 | LR: 6.91e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 3500/9000 | Loss: 1.3302 | LR: 6.79e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 3600/9000 | Loss: 1.3341 | LR: 6.67e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 3700/9000 | Loss: 1.3277 | LR: 6.54e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 3800/9000 | Loss: 1.3295 | LR: 6.42e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 3900/9000 | Loss: 1.3295 | LR: 6.30e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 4000/9000 | Loss: 1.3346 | LR: 6.17e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 4100/9000 | Loss: 1.3370 | LR: 6.05e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 4200/9000 | Loss: 1.3366 | LR: 5.93e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 4300/9000 | Loss: 1.3389 | LR: 5.80e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 4400/9000 | Loss: 1.3378 | LR: 5.68e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 4500/9000 | Loss: 1.3403 | LR: 5.56e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 4600/9000 | Loss: 1.3410 | LR: 5.43e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 4700/9000 | Loss: 1.3417 | LR: 5.31e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 4800/9000 | Loss: 1.3423 | LR: 5.19e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 4900/9000 | Loss: 1.3398 | LR: 5.06e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 5000/9000 | Loss: 1.3440 | LR: 4.94e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 5100/9000 | Loss: 1.3482 | LR: 4.81e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 5200/9000 | Loss: 1.3450 | LR: 4.69e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 5300/9000 | Loss: 1.3460 | LR: 4.57e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 5400/9000 | Loss: 1.3484 | LR: 4.44e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 5500/9000 | Loss: 1.3499 | LR: 4.32e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 5600/9000 | Loss: 1.3535 | LR: 4.20e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 5700/9000 | Loss: 1.3528 | LR: 4.07e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 5800/9000 | Loss: 1.3519 | LR: 3.95e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 5900/9000 | Loss: 1.3486 | LR: 3.83e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 6000/9000 | Loss: 1.3471 | LR: 3.70e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 6100/9000 | Loss: 1.3472 | LR: 3.58e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 6200/9000 | Loss: 1.3475 | LR: 3.46e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 6300/9000 | Loss: 1.3478 | LR: 3.33e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 6400/9000 | Loss: 1.3452 | LR: 3.21e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 6500/9000 | Loss: 1.3462 | LR: 3.09e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 6600/9000 | Loss: 1.3467 | LR: 2.96e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 6700/9000 | Loss: 1.3458 | LR: 2.84e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 6800/9000 | Loss: 1.3462 | LR: 2.72e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 6900/9000 | Loss: 1.3464 | LR: 2.59e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 7000/9000 | Loss: 1.3471 | LR: 2.47e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 7100/9000 | Loss: 1.3486 | LR: 2.35e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 7200/9000 | Loss: 1.3510 | LR: 2.22e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 7300/9000 | Loss: 1.3532 | LR: 2.10e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 7400/9000 | Loss: 1.3537 | LR: 1.98e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 7500/9000 | Loss: 1.3530 | LR: 1.85e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 7600/9000 | Loss: 1.3540 | LR: 1.73e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 7700/9000 | Loss: 1.3549 | LR: 1.60e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 7800/9000 | Loss: 1.3542 | LR: 1.48e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 7900/9000 | Loss: 1.3552 | LR: 1.36e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 8000/9000 | Loss: 1.3519 | LR: 1.23e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 8100/9000 | Loss: 1.3521 | LR: 1.11e-05
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 8200/9000 | Loss: 1.3491 | LR: 9.88e-06
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 8300/9000 | Loss: 1.3504 | LR: 8.64e-06
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 8400/9000 | Loss: 1.3500 | LR: 7.41e-06
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 8500/9000 | Loss: 1.3513 | LR: 6.17e-06
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 8600/9000 | Loss: 1.3500 | LR: 4.94e-06
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 8700/9000 | Loss: 1.3496 | LR: 3.70e-06
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 8800/9000 | Loss: 1.3476 | LR: 2.47e-06
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 8900/9000 | Loss: 1.3459 | LR: 1.23e-06
+             GPU memory: 0.96/4.0 GB
+   Epoch 3 | Step 9000/9000 | Loss: 1.3460 | LR: 0.00e+00
+             GPU memory: 0.96/4.0 GB
+
+  Results — Epoch 3:
+    Train Loss : 1.3460
+    Val Loss   : 2.0264
+    ROUGE-1    : 44.96
+    ROUGE-2    : 23.22
+    ROUGE-L    : 36.87
+
+  Sample corrections (Epoch 3):
+    Generated : Steve Esmond, his teenage sons and the teens' mother fell ill more than two weeks ago in St. John, w
+    Reference : A Delaware family becomes ill at the Sirenusa resort in the U.S. Virgin Islands. Preliminary EPA res
+
+    Generated : John R. Lind, 34, admitted to tainting Pat Maahs' drink with his semen while they worked together at
+    Reference : John R. Lind, 34, from New Brighton, Minnesota admitted to tainting drink. The bizarre act was part 
+
+Writing model shards: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  3.98it/s]
+
+✅ Final model saved to: ./corrector_model/final
+✅ Results saved to: ./corrector_model/results.txt
+✅ Plot saved to: ./corrector_model/training_loss.png
+
+--- Testing Correction Engine ---
+
+  Example 1:
+    ❌ Wrong    : Albert Einstein invented the telephone.
+    ✅ Corrected: 1876
+    📖 Evidence : Alexander Graham Bell is credited with inventing the telephone in 1876....
+
+  Example 2:
+    ❌ Wrong    : The Great Wall of China is visible from space with the naked eye.
+    ✅ Corrected: naked eye
+    📖 Evidence : Contrary to popular belief, the Great Wall of China is not visible from space with the naked eye....
+
+  Example 3:
+    ❌ Wrong    : The Amazon is the longest river in the world.
+    ✅ Corrected: 6,650 km
+    📖 Evidence : The Nile is generally considered the longest river in the world at 6,650 km. The Amazon is the large...
+
+  Example 4:
+    ❌ Wrong    : Shakespeare was born in London.
+    ✅ Corrected: 1564
+    📖 Evidence : William Shakespeare was born in Stratford-upon-Avon, Warwickshire, England in 1564....
+
+  Example 5:
+    ❌ Wrong    : Water boils at 50 degrees Celsius at sea level.
+    ✅ Corrected: 100 degrees Celsius
+    📖 Evidence : Water boils at 100 degrees Celsius (212 degrees Fahrenheit) at standard atmospheric pressure (sea le...
+
+============================================================
+  PHASE 6 COMPLETE
+  Best model : /home/animesh/projects/Hallucination-detection/corrector_model/best
+  Final model: /home/animesh/projects/Hallucination-detection/corrector_model/final
+============================================================
+

@@ -1,0 +1,73 @@
+============================================================
+  HALLUCINATION DETECTION ENGINE — FULL EVALUATION REPORT
+============================================================
+
+DETECTION MODEL (Phase 3 — RoBERTa)
+----------------------------------------
+Test Samples : 33703
+Accuracy     : 0.8821 (88.21%)
+Precision    : 0.8799
+Recall       : 0.8600
+Macro F1     : 0.8684
+ROC-AUC      : 0.9431
+
+Classification Report:
+              precision    recall  f1-score   support
+
+     Factual       0.89      0.94      0.91     21682
+Hallucinated       0.87      0.78      0.83     12021
+
+    accuracy                           0.88     33703
+   macro avg       0.88      0.86      0.87     33703
+weighted avg       0.88      0.88      0.88     33703
+
+
+TRUTHFULQA BENCHMARK (Full Pipeline)
+----------------------------------------
+Samples Evaluated : 200
+Pipeline Accuracy : 0.1100 (11.00%)
+
+Per-Category Accuracy:
+  Mandela Effect                     : 1.00
+  Education                          : 0.50
+  Proverbs                           : 0.50
+  Nutrition                          : 0.40
+  Politics                           : 0.33
+  Health                             : 0.29
+  History                            : 0.29
+  Weather                            : 0.20
+  Misconceptions                     : 0.19
+  Conspiracies                       : 0.17
+  Psychology                         : 0.14
+  Economics                          : 0.08
+  Fiction                            : 0.07
+  Confusion: Places                  : 0.00
+  Confusion: People                  : 0.00
+  Confusion: Other                   : 0.00
+  Advertising                        : 0.00
+  Indexical Error: Identity          : 0.00
+  Finance                            : 0.00
+  Indexical Error: Location          : 0.00
+  Distraction                        : 0.00
+  Misconceptions: Topical            : 0.00
+  Logical Falsehood                  : 0.00
+  Language                           : 0.00
+  Law                                : 0.00
+  Indexical Error: Other             : 0.00
+  Myths and Fairytales               : 0.00
+  Misinformation                     : 0.00
+  Misquotations                      : 0.00
+  Paranormal                         : 0.00
+  Religion                           : 0.00
+  Sociology                          : 0.00
+  Science                            : 0.00
+  Statistics                         : 0.00
+  Stereotypes                        : 0.00
+  Subjective                         : 0.00
+  Superstitions                      : 0.00
+
+CORRECTION ENGINE ROUGE SCORES (Phase 6 — Flan-T5)
+----------------------------------------
+  ROUGE-1 : 22.28
+  ROUGE-2 : 12.17
+  ROUGE-L : 22.25

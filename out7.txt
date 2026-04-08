@@ -1,0 +1,213 @@
+python3 07_evaluate.py 
+⚠ retriever.py not found — Wikipedia evidence disabled
+============================================================
+  Phase 7 — Full Pipeline Evaluation
+============================================================
+
+✅ GPU: NVIDIA GeForce RTX 3050 Laptop GPU
+   Device: cuda
+
+--- Loading all trained models ---
+   Loading detection model...
+Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 201/201 [00:00<00:00, 1199.20it/s]
+   ✅ Detection model loaded
+   Loading NLI model...
+Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 201/201 [00:00<00:00, 1055.65it/s]
+   ✅ NLI model loaded
+   Loading correction model...
+Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 190/190 [00:00<00:00, 1805.24it/s]
+The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+   ✅ Correction model loaded
+
+============================================================
+  PART 1: Detection Model Evaluation
+============================================================
+
+   Test samples: 33703
+   Running inference on test set...
+   Processed 800/33703...
+   Processed 1600/33703...
+   Processed 2400/33703...
+   Processed 3200/33703...
+   Processed 4000/33703...
+   Processed 4800/33703...
+   Processed 5600/33703...
+   Processed 6400/33703...
+   Processed 7200/33703...
+   Processed 8000/33703...
+   Processed 8800/33703...
+   Processed 9600/33703...
+   Processed 10400/33703...
+   Processed 11200/33703...
+   Processed 12000/33703...
+   Processed 12800/33703...
+   Processed 13600/33703...
+   Processed 14400/33703...
+   Processed 15200/33703...
+   Processed 16000/33703...
+   Processed 16800/33703...
+   Processed 17600/33703...
+   Processed 18400/33703...
+   Processed 19200/33703...
+   Processed 20000/33703...
+   Processed 20800/33703...
+   Processed 21600/33703...
+   Processed 22400/33703...
+   Processed 23200/33703...
+   Processed 24000/33703...
+   Processed 24800/33703...
+   Processed 25600/33703...
+   Processed 26400/33703...
+   Processed 27200/33703...
+   Processed 28000/33703...
+   Processed 28800/33703...
+   Processed 29600/33703...
+   Processed 30400/33703...
+   Processed 31200/33703...
+   Processed 32000/33703...
+   Processed 32800/33703...
+   Processed 33600/33703...
+
+   Detection Model Results:
+     Accuracy  : 0.8821 (88.21%)
+     Precision : 0.8799
+     Recall    : 0.8600
+     Macro F1  : 0.8684
+
+              precision    recall  f1-score   support
+
+     Factual       0.89      0.94      0.91     21682
+Hallucinated       0.87      0.78      0.83     12021
+
+    accuracy                           0.88     33703
+   macro avg       0.88      0.86      0.87     33703
+weighted avg       0.88      0.88      0.88     33703
+
+   ROC-AUC: 0.9431
+
+============================================================
+  PART 2: TruthfulQA Benchmark Evaluation
+============================================================
+
+   Benchmark samples : 200
+   Categories        : 37
+   Running full pipeline on benchmark...
+
+   Processed 20/200...
+   Processed 40/200...
+   Processed 60/200...
+   Processed 80/200...
+   Processed 100/200...
+   Processed 120/200...
+   Processed 140/200...
+   Processed 160/200...
+   Processed 180/200...
+   Processed 200/200...
+
+   TruthfulQA Benchmark Accuracy: 0.1100 (11.00%)
+   Correct predictions: 22/200
+
+   Per-category accuracy:
+     Mandela Effect                     : 1.00
+     Education                          : 0.50
+     Proverbs                           : 0.50
+     Nutrition                          : 0.40
+     Politics                           : 0.33
+     Health                             : 0.29
+     History                            : 0.29
+     Weather                            : 0.20
+     Misconceptions                     : 0.19
+     Conspiracies                       : 0.17
+
+============================================================
+  PART 3: Correction Engine ROUGE Evaluation
+============================================================
+
+   Correction Engine ROUGE Scores:
+     ROUGE-1 : 22.28
+     ROUGE-2 : 12.17
+     ROUGE-L : 22.25
+
+   Interpretation:
+     ROUGE-1 measures individual word overlap
+     ROUGE-2 measures two-word phrase overlap
+     ROUGE-L measures longest matching sequence
+     Score > 30 is considered good for correction tasks
+
+============================================================
+  Saving Results
+============================================================
+
+✅ Pipeline results saved: ./evaluation_results/pipeline_results.csv
+✅ Full report saved: ./evaluation_results/full_report.txt
+
+--- Generating evaluation plots ---
+✅ Evaluation plots saved: ./evaluation_results/full_evaluation.png
+
+============================================================
+  PART 4: Full Pipeline Demo
+============================================================
+
+  ────────────────────────────────────────────────────────
+  Example 1: ⚠ HALLUCINATED
+  Statement  : Albert Einstein invented the telephone in 1876.
+  Detection  : 99.9% hallucination probability
+  NLI Result : Contradiction (Contradiction: 99.84%)
+  Confidence : HIGH
+  Corrected  : Alexander Graham Bell
+
+  ────────────────────────────────────────────────────────
+  Example 2: ⚠ HALLUCINATED
+  Statement  : The Eiffel Tower is located in Berlin, Germany.
+  Detection  : 99.91% hallucination probability
+  NLI Result : Contradiction (Contradiction: 99.87%)
+  Confidence : HIGH
+  Corrected  : Paris, France
+
+  ────────────────────────────────────────────────────────
+  Example 3: ✅ FACTUAL
+  Statement  : Water boils at 100 degrees Celsius at sea level.
+  Detection  : 12.96% hallucination probability
+  NLI Result : Neutral (Contradiction: 39.37%)
+  Confidence : LOW
+
+  ────────────────────────────────────────────────────────
+  Example 4: ⚠ HALLUCINATED
+  Statement  : The Amazon is the longest river in the world.
+  Detection  : 99.9% hallucination probability
+  NLI Result : Neutral (Contradiction: 1.55%)
+  Confidence : MEDIUM
+  Corrected  : 6,650 km
+
+  ────────────────────────────────────────────────────────
+  Example 5: ⚠ HALLUCINATED
+  Statement  : Shakespeare was born in London.
+  Detection  : 99.91% hallucination probability
+  NLI Result : Contradiction (Contradiction: 99.88%)
+  Confidence : HIGH
+  Corrected  : Warwickshire
+
+============================================================
+  EVALUATION COMPLETE — SUMMARY
+============================================================
+
+  Detection Model (RoBERTa):
+    Accuracy  : 88.21%
+    Macro F1  : 0.8684
+    ROC-AUC   : 0.9431
+
+  Full Pipeline (TruthfulQA Benchmark):
+    Accuracy  : 11.00%
+
+  Correction Engine (Flan-T5):
+    ROUGE-1      : 22.28
+    ROUGE-2      : 12.17
+    ROUGE-L      : 22.25
+
+  Output files saved to: /home/animesh/projects/Hallucination-detection/evaluation_results/
+    full_report.txt
+    full_evaluation.png
+    pipeline_results.csv
+
+  Use these results in your MSc project report.
+============================================================

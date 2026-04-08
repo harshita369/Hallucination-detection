@@ -73,7 +73,7 @@ CONFIG = {
     # Model — flan-t5-base is the sweet spot for 4GB VRAM
     # flan-t5-small is faster but lower quality
     # flan-t5-large needs ~8GB VRAM — too big for our GPU
-    "model_name"      : "google/flan-t5-base",
+    "model_name"      : "google/flan-t5-small",
 
     # Input/output lengths
     # Input  = "correct: [statement] evidence: [evidence]"
@@ -83,10 +83,10 @@ CONFIG = {
 
     # Batch size — T5 is smaller than RoBERTa, 8 fits safely
     # Reduce to 4 if out-of-memory
-    "batch_size"        : 8,
+    "batch_size"        : 1,
 
     # Gradient accumulation — effective batch = 8x4 = 32
-    "grad_accum"        : 4,
+    "grad_accum"        : 2,
 
     # Training
     "epochs"            : 3,
@@ -264,15 +264,14 @@ class CorrectionDataset(Dataset):
 
         # Tokenize target output
         # We tokenize the target separately with max_output_length
-        with self.tokenizer.as_target_tokenizer():
-            target_encoding = self.tokenizer(
-                target_text,
-                max_length  = self.max_output_len,
-                truncation  = True,
-                padding     = "max_length",
-                return_tensors = "pt"
-            )
-
+        # Tokenize target output
+        target_encoding = self.tokenizer(
+           text_target    = target_text,
+           max_length     = self.max_output_len,
+           truncation     = True,
+           padding        = "max_length",
+           return_tensors = "pt"
+)
         # Get label IDs
         labels = target_encoding["input_ids"].squeeze(0)
 

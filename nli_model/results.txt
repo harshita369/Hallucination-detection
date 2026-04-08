@@ -1,0 +1,22 @@
+NLI VERIFICATION MODEL — RESULTS
+==================================================
+
+Model       : cross-encoder/nli-roberta-base
+Max Length  : 128
+Batch Size  : 16 (effective: 32)
+Epochs      : 2
+Train Size  : 100000
+Val Size    : 9842
+Test Size   : 9824
+Best F1     : 0.9154
+
+CLASSIFICATION REPORT:
+               precision    recall  f1-score   support
+
+   Entailment       0.92      0.92      0.92      3368
+      Neutral       0.88      0.88      0.88      3219
+Contradiction       0.93      0.94      0.94      3237
+
+     accuracy                           0.91      9824
+    macro avg       0.91      0.91      0.91      9824
+ weighted avg       0.91      0.91      0.91      9824

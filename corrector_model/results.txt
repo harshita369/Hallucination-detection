@@ -1,0 +1,15 @@
+CORRECTION ENGINE — RESULTS
+==================================================
+
+Model       : google/flan-t5-small
+Max Input   : 256
+Max Output  : 128
+Batch Size  : 1 (effective: 2)
+Epochs      : 3
+Train Size  : 9000
+Val Size    : 1000
+
+FINAL ROUGE SCORES:
+  ROUGE-1 : 44.96
+  ROUGE-2 : 23.22
+  ROUGE-L : 36.87

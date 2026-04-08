@@ -2,3 +2,5 @@ venv
 *.csv
 venv/
 venv*
+*.safetensors
+*.json
