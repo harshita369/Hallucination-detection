@@ -1,7 +1,7 @@
 """
 =============================================================
   Phase 6 — Correction Engine Training
-  Model  : google/flan-t5-base (fine-tuned text2text)
+  Model  : google/flan-t5-small (fine-tuned text2text)
   GPU    : RTX 3050 Mobile 4GB — Linux
   Input  : outputs/correction_train.csv
   Output : corrector_model/best/
@@ -24,7 +24,7 @@ WHAT THIS DOES:
 
 WHY FLAN-T5?
   - Text-to-text model — perfect for correction task
-  - flan-t5-base is 250MB — fits easily in 4GB VRAM
+  - flan-t5-small is 250MB — fits easily in 4GB VRAM
   - Already instruction-tuned — understands "correct:" prefix
   - Much smaller than GPT but good enough for correction
 
@@ -70,7 +70,7 @@ CONFIG = {
     "train_path"      : "./outputs/correction_train.csv",
     "output_dir"      : "./corrector_model",
 
-    # Model — flan-t5-base is the sweet spot for 4GB VRAM
+    # Model — flan-t5-small is the sweet spot for 4GB VRAM
     # flan-t5-small is faster but lower quality
     # flan-t5-large needs ~8GB VRAM — too big for our GPU
     "model_name"      : "google/flan-t5-small",
@@ -83,14 +83,14 @@ CONFIG = {
 
     # Batch size — T5 is smaller than RoBERTa, 8 fits safely
     # Reduce to 4 if out-of-memory
-    "batch_size"        : 1,
+    "batch_size"        : 2,
 
     # Gradient accumulation — effective batch = 8x4 = 32
-    "grad_accum"        : 2,
+    "grad_accum"        : 4,
 
     # Training
     "epochs"            : 3,
-    "learning_rate"     : 3e-4,    # T5 uses higher LR than BERT models
+    "learning_rate"     : 1e-4,    # T5 uses higher LR than BERT models
     "warmup_ratio"      : 0.1,
     "weight_decay"      : 0.01,
     "max_grad_norm"     : 1.0,
@@ -266,12 +266,12 @@ class CorrectionDataset(Dataset):
         # We tokenize the target separately with max_output_length
         # Tokenize target output
         target_encoding = self.tokenizer(
-           text_target    = target_text,
-           max_length     = self.max_output_len,
-           truncation     = True,
-           padding        = "max_length",
-           return_tensors = "pt"
-)
+            target_text,
+            max_length     = self.max_output_len,
+            truncation     = True,
+            padding        = "max_length",
+            return_tensors = "pt"
+        )
         # Get label IDs
         labels = target_encoding["input_ids"].squeeze(0)
 
@@ -326,7 +326,7 @@ print(f"   Val batches   : {len(val_loader)}\n")
 # T5ForConditionalGeneration is the encoder-decoder T5 model
 # =============================================================
 
-print("--- Loading Flan-T5-base model ---")
+print("--- Loading Flan-t5-small model ---")
 print("   (downloads ~250MB on first run, cached after)\n")
 
 model = T5ForConditionalGeneration.from_pretrained(CONFIG["model_name"])

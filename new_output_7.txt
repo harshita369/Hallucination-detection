@@ -1,0 +1,213 @@
+python3 07_evaluate.py
+⚠ Retriever not available: No module named 'retriever'
+============================================================
+  Phase 7 — Full Pipeline Evaluation (Improved)
+============================================================
+
+✅ GPU: NVIDIA GeForce RTX 3050 Laptop GPU
+   Device: cuda
+
+--- Loading all trained models ---
+Loading weights: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 201/201 [00:00<00:00, 994.24it/s]
+   ✅ Detection model loaded
+Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 201/201 [00:00<00:00, 1027.92it/s]
+   ✅ NLI model loaded
+Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 190/190 [00:00<00:00, 1805.56it/s]
+The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+   ✅ Correction model loaded
+   ✅ Loaded threshold: 0.58
+
+============================================================
+  PART 1: Detection Model Evaluation
+============================================================
+
+   Test samples: 33703
+   Threshold   : 0.58
+   Running inference...
+
+   Processed 800/33703...
+   Processed 1600/33703...
+   Processed 2400/33703...
+   Processed 3200/33703...
+   Processed 4000/33703...
+   Processed 4800/33703...
+   Processed 5600/33703...
+   Processed 6400/33703...
+   Processed 7200/33703...
+   Processed 8000/33703...
+   Processed 8800/33703...
+   Processed 9600/33703...
+   Processed 10400/33703...
+   Processed 11200/33703...
+   Processed 12000/33703...
+   Processed 12800/33703...
+   Processed 13600/33703...
+   Processed 14400/33703...
+   Processed 15200/33703...
+   Processed 16000/33703...
+   Processed 16800/33703...
+   Processed 17600/33703...
+   Processed 18400/33703...
+   Processed 19200/33703...
+   Processed 20000/33703...
+   Processed 20800/33703...
+   Processed 21600/33703...
+   Processed 22400/33703...
+   Processed 23200/33703...
+   Processed 24000/33703...
+   Processed 24800/33703...
+   Processed 25600/33703...
+   Processed 26400/33703...
+   Processed 27200/33703...
+   Processed 28000/33703...
+   Processed 28800/33703...
+   Processed 29600/33703...
+   Processed 30400/33703...
+   Processed 31200/33703...
+   Processed 32000/33703...
+   Processed 32800/33703...
+   Processed 33600/33703...
+
+   Accuracy  : 0.9033 (90.33%)
+   Precision : 0.8997
+   Recall    : 0.8878
+   Macro F1  : 0.8931
+   ROC-AUC   : 0.9567
+
+              precision    recall  f1-score   support
+
+     Factual       0.91      0.94      0.93     21682
+Hallucinated       0.89      0.83      0.86     12021
+
+    accuracy                           0.90     33703
+   macro avg       0.90      0.89      0.89     33703
+weighted avg       0.90      0.90      0.90     33703
+
+   Per-source accuracy:
+     HaluEval_Summarization             : 0.977
+     FEVER_train                        : 0.883
+     GeneralHallucination               : 0.924
+     HaluEval_QA                        : 0.990
+     FEVER_dev                          : 0.831
+
+============================================================
+  PART 2: TruthfulQA Benchmark Evaluation
+============================================================
+
+   Samples    : 790
+   Categories : 37
+   Wikipedia  : disabled
+
+   Processed 50/790...
+   Processed 100/790...
+   Processed 150/790...
+   Processed 200/790...
+   Processed 250/790...
+   Processed 300/790...
+   Processed 350/790...
+   Processed 400/790...
+   Processed 450/790...
+   Processed 500/790...
+   Processed 550/790...
+   Processed 600/790...
+   Processed 650/790...
+   Processed 700/790...
+   Processed 750/790...
+
+   TruthfulQA Strict Accuracy  : 0.1278 (12.78%)
+   TruthfulQA Partial Accuracy : 0.7114 (71.14%)
+   Evidence retrieved for      : 0/790
+
+   Per-category accuracy (top 10):
+     Statistics                         : 0.80
+     Finance                            : 0.56
+     Proverbs                           : 0.28
+     Sociology                          : 0.27
+     Nutrition                          : 0.25
+     Subjective                         : 0.22
+     Fiction                            : 0.20
+     Conspiracies                       : 0.19
+     History                            : 0.17
+     Mandela Effect                     : 0.17
+
+============================================================
+  PART 3: Correction Quality Metrics
+============================================================
+
+   ROUGE-1 : 46.05
+   ROUGE-2 : 32.98
+   ROUGE-L : 44.37
+
+   Threshold > 30 is considered good for correction tasks
+
+============================================================
+  Saving Results
+============================================================
+
+✅ Pipeline results saved
+✅ Full report saved
+✅ Plots saved
+
+============================================================
+  PART 4: Full Pipeline Demo
+============================================================
+
+  ────────────────────────────────────────────────────────
+  1. ⚠ HALLUCINATED (weighted: 98.61%)
+  Statement  : Albert Einstein invented the telephone in 1876.
+  Detection  : 97.79%
+  NLI        : Contradiction (99.84% contradiction)
+  Confidence : HIGH
+  Corrected  : Albert Einstein invented the telephone in 1876.
+
+  ────────────────────────────────────────────────────────
+  2. ⚠ HALLUCINATED (weighted: 98.62%)
+  Statement  : The Eiffel Tower is located in Berlin, Germany.
+  Detection  : 97.79%
+  NLI        : Contradiction (99.87% contradiction)
+  Confidence : HIGH
+  Corrected  : The Eiffel Tower is located in Berlin, Germany.
+
+  ────────────────────────────────────────────────────────
+  3. ✅ FACTUAL (weighted: 25.48%)
+  Statement  : Water boils at 100 degrees Celsius at sea level.
+  Detection  : 9.42%
+  NLI        : Contradiction (49.57% contradiction)
+  Confidence : LOW
+
+  ────────────────────────────────────────────────────────
+  4. ⚠ HALLUCINATED (weighted: 59.86%)
+  Statement  : The Amazon is the longest river in the world.
+  Detection  : 97.74%
+  NLI        : Neutral (3.04% contradiction)
+  Confidence : MEDIUM
+  Corrected  : The Nile is the longest river at 6,650 km. The Amazon is largest by flow.
+
+  ────────────────────────────────────────────────────────
+  5. ⚠ HALLUCINATED (weighted: 46.72%)
+  Statement  : Shakespeare was born in London.
+  Detection  : 11.35%
+  NLI        : Contradiction (99.79% contradiction)
+  Confidence : MEDIUM
+  Corrected  : Shakespeare was born in Stratford-upon-Avon in April 1564
+
+============================================================
+  EVALUATION COMPLETE — SUMMARY
+============================================================
+
+  Detection (RoBERTa) — threshold=0.58:
+    Accuracy  : 90.33%
+    Macro F1  : 0.8931
+    ROC-AUC   : 0.9567
+
+  TruthfulQA (790 samples):
+    Strict Accuracy  : 12.78%
+    Partial Accuracy : 71.14%
+
+  Correction (Flan-T5):
+    ROUGE-1: 46.05
+    ROUGE-2: 32.98
+    ROUGE-L: 44.37
+
+  Output: /home/animesh/projects/Hallucination-detection/evaluation_results/
+============================================================

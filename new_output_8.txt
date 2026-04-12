@@ -1,0 +1,33 @@
+ python3 pridict.py
+Loading model...
+Loading weights: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 201/201 [00:00<00:00, 14256.21it/s]
+Model loaded from: ./detector_model/best
+Device: cuda
+
+=======================================================
+  Hallucination Detector — Interactive Mode
+  Type a sentence and press Enter.
+  Type 'quit' to exit.
+=======================================================
+
+> Andromeda Galaxy is the Galaxy in which we live
+  [OK] Factual (confidence: 89.93%)
+       Factual: 89.93%  |  Hallucinated: 10.07%
+
+> milikway galaxy is name of a planet
+  [OK] Factual (confidence: 90.33%)
+       Factual: 90.33%  |  Hallucinated: 9.67%
+
+> new york is a continent
+  [!!] Hallucinated (confidence: 96.83%)
+       Factual: 3.17%  |  Hallucinated: 96.83%
+
+> 1 liter is 1200 ml
+  [OK] Factual (confidence: 79.9%)
+       Factual: 79.9%  |  Hallucinated: 20.1%
+
+> 1 km is equal to 1 liter
+  [OK] Factual (confidence: 71.6%)
+       Factual: 71.6%  |  Hallucinated: 28.4%
+
+> 

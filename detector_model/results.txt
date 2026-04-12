@@ -1,20 +1,18 @@
-HALLUCINATION DETECTION MODEL — RESULTS
+HALLUCINATION DETECTION MODEL — IMPROVED RESULTS
 ==================================================
 
-Model       : roberta-base
-Max Length  : 128
-Batch Size  : 4 (effective: 16)
-Epochs      : 3
-Train Size  : 50000
-Test Size   : 33703
-Best F1     : 0.8684
+Model         : roberta-base
+Train Samples : 134810
+Best Threshold: 0.58
+Best Macro F1 : 0.8916
+ROC-AUC       : 0.9567
 
 CLASSIFICATION REPORT:
               precision    recall  f1-score   support
 
-     Factual       0.89      0.94      0.91     21682
-Hallucinated       0.87      0.78      0.83     12021
+     Factual       0.91      0.94      0.93     21682
+Hallucinated       0.89      0.83      0.86     12021
 
-    accuracy                           0.88     33703
-   macro avg       0.88      0.86      0.87     33703
-weighted avg       0.88      0.88      0.88     33703
+    accuracy                           0.90     33703
+   macro avg       0.90      0.89      0.89     33703
+weighted avg       0.90      0.90      0.90     33703

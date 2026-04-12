@@ -1,73 +1,71 @@
-============================================================
-  HALLUCINATION DETECTION ENGINE — FULL EVALUATION REPORT
+HALLUCINATION DETECTION ENGINE — IMPROVED EVALUATION
 ============================================================
 
-DETECTION MODEL (Phase 3 — RoBERTa)
+Detection Threshold : 0.58
+
+DETECTION MODEL (RoBERTa)
 ----------------------------------------
 Test Samples : 33703
-Accuracy     : 0.8821 (88.21%)
-Precision    : 0.8799
-Recall       : 0.8600
-Macro F1     : 0.8684
-ROC-AUC      : 0.9431
+Accuracy     : 0.9033 (90.33%)
+Macro F1     : 0.8931
+ROC-AUC      : 0.9567
 
-Classification Report:
               precision    recall  f1-score   support
 
-     Factual       0.89      0.94      0.91     21682
-Hallucinated       0.87      0.78      0.83     12021
+     Factual       0.91      0.94      0.93     21682
+Hallucinated       0.89      0.83      0.86     12021
 
-    accuracy                           0.88     33703
-   macro avg       0.88      0.86      0.87     33703
-weighted avg       0.88      0.88      0.88     33703
+    accuracy                           0.90     33703
+   macro avg       0.90      0.89      0.89     33703
+weighted avg       0.90      0.90      0.90     33703
 
 
-TRUTHFULQA BENCHMARK (Full Pipeline)
+TRUTHFULQA BENCHMARK
 ----------------------------------------
-Samples Evaluated : 200
-Pipeline Accuracy : 0.1100 (11.00%)
+Strict Accuracy  : 0.1278 (12.78%)
+Partial Accuracy : 0.7114 (71.14%)
 
-Per-Category Accuracy:
-  Mandela Effect                     : 1.00
-  Education                          : 0.50
-  Proverbs                           : 0.50
-  Nutrition                          : 0.40
-  Politics                           : 0.33
-  Health                             : 0.29
-  History                            : 0.29
-  Weather                            : 0.20
-  Misconceptions                     : 0.19
-  Conspiracies                       : 0.17
-  Psychology                         : 0.14
-  Economics                          : 0.08
-  Fiction                            : 0.07
+Per-Category:
+  Statistics                         : 0.80
+  Finance                            : 0.56
+  Proverbs                           : 0.28
+  Sociology                          : 0.27
+  Nutrition                          : 0.25
+  Subjective                         : 0.22
+  Fiction                            : 0.20
+  Conspiracies                       : 0.19
+  History                            : 0.17
+  Mandela Effect                     : 0.17
+  Misconceptions                     : 0.15
+  Myths and Fairytales               : 0.14
+  Health                             : 0.13
+  Stereotypes                        : 0.12
+  Science                            : 0.11
+  Law                                : 0.11
+  Psychology                         : 0.11
+  Politics                           : 0.10
+  Language                           : 0.10
+  Superstitions                      : 0.09
+  Indexical Error: Location          : 0.09
+  Advertising                        : 0.08
+  Distraction                        : 0.07
+  Economics                          : 0.06
+  Misquotations                      : 0.06
+  Indexical Error: Other             : 0.06
   Confusion: Places                  : 0.00
-  Confusion: People                  : 0.00
   Confusion: Other                   : 0.00
-  Advertising                        : 0.00
-  Indexical Error: Identity          : 0.00
-  Finance                            : 0.00
-  Indexical Error: Location          : 0.00
-  Distraction                        : 0.00
+  Confusion: People                  : 0.00
   Misconceptions: Topical            : 0.00
   Logical Falsehood                  : 0.00
-  Language                           : 0.00
-  Law                                : 0.00
-  Indexical Error: Other             : 0.00
-  Myths and Fairytales               : 0.00
-  Misinformation                     : 0.00
-  Misquotations                      : 0.00
+  Education                          : 0.00
+  Indexical Error: Identity          : 0.00
   Paranormal                         : 0.00
+  Misinformation                     : 0.00
   Religion                           : 0.00
-  Sociology                          : 0.00
-  Science                            : 0.00
-  Statistics                         : 0.00
-  Stereotypes                        : 0.00
-  Subjective                         : 0.00
-  Superstitions                      : 0.00
+  Weather                            : 0.00
 
-CORRECTION ENGINE ROUGE SCORES (Phase 6 — Flan-T5)
+CORRECTION ROUGE SCORES
 ----------------------------------------
-  ROUGE-1 : 22.28
-  ROUGE-2 : 12.17
-  ROUGE-L : 22.25
+  ROUGE-1: 46.05
+  ROUGE-2: 32.98
+  ROUGE-L: 44.37
