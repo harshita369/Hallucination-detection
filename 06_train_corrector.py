@@ -1,36 +1,16 @@
 """
 =============================================================
-  Phase 6 — Correction Engine Training
-  Model  : google/flan-t5-small (fine-tuned text2text)
+  Phase 6 — Correction Engine
+  Model  : google/flan-t5-small
   GPU    : RTX 3050 Mobile 4GB — Linux
-  Input  : outputs/correction_train.csv
-  Output : corrector_model/best/
-           corrector_model/final/
-           corrector_model/results.txt
-=============================================================
-WHAT THIS DOES:
-  Trains a text-to-text model that takes a hallucinated
-  statement + evidence and generates the corrected version.
 
-  Input  : "correct: [wrong statement] evidence: [evidence]"
-  Output : "[corrected factual statement]"
-
-  Example:
-  Input  : "correct: Einstein invented the telephone.
-            evidence: Alexander Graham Bell invented the
-            telephone in 1876."
-  Output : "The telephone was invented by Alexander Graham
-            Bell in 1876."
-
-WHY FLAN-T5?
-  - Text-to-text model — perfect for correction task
-  - flan-t5-small is 250MB — fits easily in 4GB VRAM
-  - Already instruction-tuned — understands "correct:" prefix
-  - Much smaller than GPT but good enough for correction
-
-HOW TO RUN:
-  Run AFTER Phase 3 and Phase 4 are complete
-  python train_corrector.py
+  FIXES:
+  1. Prompt now demands a full complete sentence explicitly
+  2. min_length=15, length_penalty=2.0 — forces full sentences
+  3. Lower LR (5e-5) for stable training
+  4. All 20,000 correction samples used
+  5. Early stopping on ROUGE-L
+  6. no_repeat_ngram_size=3 prevents repetition
 =============================================================
 """
 
@@ -43,665 +23,350 @@ import warnings
 warnings.filterwarnings("ignore")
 
 from torch.utils.data import Dataset, DataLoader
+from torch.cuda.amp import GradScaler, autocast
 from transformers import (
     T5Tokenizer,
     T5ForConditionalGeneration,
-    get_linear_schedule_with_warmup
+    get_cosine_schedule_with_warmup
 )
 from torch.optim import AdamW
 
-# For evaluating correction quality
-# ROUGE measures overlap between generated and reference text
 try:
     from evaluate import load as load_metric
-    rouge = load_metric("rouge")
-    ROUGE_AVAILABLE = True
+    rouge_metric = load_metric("rouge")
+    ROUGE_OK = True
 except:
-    ROUGE_AVAILABLE = False
-    print("⚠ evaluate library not found — ROUGE scoring disabled")
-    print("  Install with: pip install evaluate rouge-score")
-
-# =============================================================
-# CONFIGURATION
-# =============================================================
+    ROUGE_OK = False
+    print("⚠ pip install evaluate rouge-score")
 
 CONFIG = {
-    # Paths
-    "train_path"      : "./outputs/correction_train.csv",
-    "output_dir"      : "./corrector_model",
-
-    # Model — flan-t5-small is the sweet spot for 4GB VRAM
-    # flan-t5-small is faster but lower quality
-    # flan-t5-large needs ~8GB VRAM — too big for our GPU
-    "model_name"      : "google/flan-t5-small",
-
-    # Input/output lengths
-    # Input  = "correct: [statement] evidence: [evidence]"
-    # Output = corrected statement
-    "max_input_length"  : 256,   # longer inputs — contains both statement + evidence
-    "max_output_length" : 128,   # output is just the corrected statement
-
-    # Batch size — T5 is smaller than RoBERTa, 8 fits safely
-    # Reduce to 4 if out-of-memory
-    "batch_size"        : 2,
-
-    # Gradient accumulation — effective batch = 8x4 = 32
-    "grad_accum"        : 4,
-
-    # Training
-    "epochs"            : 3,
-    "learning_rate"     : 1e-4,    # T5 uses higher LR than BERT models
-    "warmup_ratio"      : 0.1,
-    "weight_decay"      : 0.01,
-    "max_grad_norm"     : 1.0,
-
-    # Limit samples for first run
-    # correction_train.csv has 20,000 rows
-    # 10,000 is enough for a strong correction model
-    # Set to None to use all 20,000
-    "max_train_samples" : 10000,
-
-    # Validation split — 10% of training data used for validation
-    "val_split"         : 0.1,
-
-    # Linux workers
-    "num_workers"       : 4,
-
-    "seed"              : 42,
+    "train_path"       : "./outputs/correction_train.csv",
+    "output_dir"       : "./corrector_model",
+    "model_name"       : "google/flan-t5-small",
+    "max_input_length" : 256,
+    "max_output_length": 128,
+    "batch_size"       : 8,
+    "grad_accum"       : 4,
+    "epochs"           : 6,
+    "learning_rate"    : 5e-5,    # lower than before for stable training
+    "warmup_ratio"     : 0.1,
+    "weight_decay"     : 0.01,
+    "max_grad_norm"    : 1.0,
+    "patience"         : 2,
+    "max_train_samples": None,    # use all 20,000
+    "val_split"        : 0.1,
+    "use_fp16"         : True,
+    "num_workers"      : 4,
+    "seed"             : 42,
 }
 
-# =============================================================
-# STEP 1 — DEVICE SETUP
-# =============================================================
-
-torch.manual_seed(CONFIG["seed"])
-np.random.seed(CONFIG["seed"])
+os.makedirs(CONFIG["output_dir"], exist_ok=True)
+torch.manual_seed(CONFIG["seed"]); np.random.seed(CONFIG["seed"])
 
 print("=" * 60)
-print("  Hallucination Detection — Phase 6 Correction Engine")
+print("  Phase 6 — Correction Engine")
 print("=" * 60)
 
 if torch.cuda.is_available():
-    device   = torch.device("cuda")
-    gpu_name = torch.cuda.get_device_name(0)
-    vram_gb  = torch.cuda.get_device_properties(0).total_memory / 1e9
-    print(f"\n✅ GPU : {gpu_name}")
-    print(f"   VRAM: {vram_gb:.1f} GB")
+    device = torch.device("cuda")
+    print(f"\n✅ GPU : {torch.cuda.get_device_name(0)}")
     torch.backends.cudnn.benchmark = True
     os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
 else:
     device = torch.device("cpu")
-    print("\n⚠ GPU not found — running on CPU (slow)")
-
+    CONFIG["use_fp16"] = False
 print(f"   Device: {device}\n")
 
-# =============================================================
-# STEP 2 — LOAD DATA
-# =============================================================
-
+# ── Load data ─────────────────────────────────────────────
 print("--- Loading correction dataset ---")
-
 df = pd.read_csv(CONFIG["train_path"], encoding="latin-1")
-
-# Drop rows with missing values
-df = df.dropna(subset=["wrong_statement", "correct_statement"]).reset_index(drop=True)
-
-# Fill missing evidence with empty string
-df["evidence"] = df["evidence"].fillna("").astype(str)
+df = df.dropna(subset=["wrong_statement","correct_statement"]).reset_index(drop=True)
+df["evidence"]          = df["evidence"].fillna("").astype(str)
 df["wrong_statement"]   = df["wrong_statement"].astype(str)
 df["correct_statement"] = df["correct_statement"].astype(str)
+df = df[df["correct_statement"].str.len() > 5].reset_index(drop=True)
+df = df[df["wrong_statement"].str.len()   > 5].reset_index(drop=True)
 
-# Remove rows where correct_statement is too short (likely noise)
-df = df[df["correct_statement"].str.len() > 3].reset_index(drop=True)
-
-# Limit samples if configured
 if CONFIG["max_train_samples"] and len(df) > CONFIG["max_train_samples"]:
-    df = df.sample(
-        n            = CONFIG["max_train_samples"],
-        random_state = CONFIG["seed"]
-    ).reset_index(drop=True)
-    print(f"   Samples capped at: {CONFIG['max_train_samples']}")
+    df = df.sample(n=CONFIG["max_train_samples"], random_state=CONFIG["seed"]).reset_index(drop=True)
 
-# Split into train and validation
-val_size   = int(len(df) * CONFIG["val_split"])
-train_size = len(df) - val_size
+val_size = int(len(df) * CONFIG["val_split"])
+df_train = df.iloc[:len(df)-val_size].reset_index(drop=True)
+df_val   = df.iloc[len(df)-val_size:].reset_index(drop=True)
+print(f"   Train: {len(df_train)} | Val: {len(df_val)}\n")
 
-df_train = df.iloc[:train_size].reset_index(drop=True)
-df_val   = df.iloc[train_size:].reset_index(drop=True)
-
-print(f"   Train : {len(df_train)} samples")
-print(f"   Val   : {len(df_val)} samples")
-print(f"\n   Sample correction pair:")
-print(f"     Wrong  : {df_train['wrong_statement'].iloc[0][:80]}...")
-print(f"     Correct: {df_train['correct_statement'].iloc[0][:80]}...")
-print()
-
-# =============================================================
-# STEP 3 — TOKENIZER
-# T5 uses a different tokenizer than RoBERTa
-# It is a SentencePiece tokenizer
-# =============================================================
-
-print("--- Loading T5 tokenizer ---")
-
-# T5Tokenizer is specific to T5 family models
-# Do NOT use AutoTokenizer here — it loads a fast tokenizer
-# that has known issues with T5 padding
-tokenizer = T5Tokenizer.from_pretrained(
-    CONFIG["model_name"],
-    legacy = False    # use new tokenizer behavior
-)
-
+# ── Tokenizer ─────────────────────────────────────────────
+tokenizer = T5Tokenizer.from_pretrained(CONFIG["model_name"], legacy=False)
 print("   Tokenizer loaded\n")
 
-# =============================================================
-# STEP 4 — BUILD INPUT PROMPTS
-# T5 is a text-to-text model — both input and output are text
-# We use a prefix "correct:" to tell the model what task to do
-# This is called instruction tuning / prompt engineering
-# =============================================================
-
-def build_input_prompt(wrong_statement, evidence):
+# ── Prompt builder — explicit full-sentence instruction ───
+def build_prompt(wrong, evidence):
     """
-    Builds the input text for the T5 model.
-
-    Format: "correct: [wrong statement] evidence: [evidence]"
-
-    The "correct:" prefix tells Flan-T5 this is a correction task.
-    The "evidence:" section gives the model factual context to work with.
-    Without evidence, the model can only guess the correction.
-    With evidence, it can generate a factually grounded correction.
+    Improved prompt that forces the model to output
+    a complete, grammatically correct sentence.
     """
-    if evidence and evidence.strip():
-        return f"correct: {wrong_statement} evidence: {evidence}"
+    if evidence and evidence.strip() and evidence.strip() != "nan":
+        return (
+            f"Task: Correct the factual error in the statement below. "
+            f"Use the evidence provided. "
+            f"Write one complete corrected sentence.\n"
+            f"Evidence: {evidence.strip()}\n"
+            f"Incorrect statement: {wrong}\n"
+            f"Corrected statement:"
+        )
     else:
-        # If no evidence available, still attempt correction
-        return f"correct the following hallucinated statement: {wrong_statement}"
+        return (
+            f"Task: Correct the factual error in the statement below. "
+            f"Write one complete corrected sentence.\n"
+            f"Incorrect statement: {wrong}\n"
+            f"Corrected statement:"
+        )
 
-
-# =============================================================
-# STEP 5 — DATASET CLASS
-# T5 requires both input_ids AND labels (target token ids)
-# =============================================================
-
+# ── Dataset ───────────────────────────────────────────────
 class CorrectionDataset(Dataset):
-    """
-    Dataset for the correction task.
-    Each sample contains:
-      - input_ids      : tokenized "correct: [wrong] evidence: [ev]"
-      - attention_mask : 1s for real tokens, 0s for padding
-      - labels         : tokenized correct statement (target output)
-    """
+    def __init__(self, df, tokenizer, max_in, max_out):
+        self.data = df.reset_index(drop=True)
+        self.tok  = tokenizer
+        self.max_in  = max_in
+        self.max_out = max_out
 
-    def __init__(self, dataframe, tokenizer, max_input_len, max_output_len):
-        self.data           = dataframe.reset_index(drop=True)
-        self.tokenizer      = tokenizer
-        self.max_input_len  = max_input_len
-        self.max_output_len = max_output_len
-
-    def __len__(self):
-        return len(self.data)
+    def __len__(self): return len(self.data)
 
     def __getitem__(self, idx):
         row = self.data.iloc[idx]
+        inp = build_prompt(str(row["wrong_statement"]), str(row["evidence"]))
+        tgt = str(row["correct_statement"])
 
-        # Build input prompt
-        input_text  = build_input_prompt(
-            str(row["wrong_statement"]),
-            str(row["evidence"])
-        )
-        # Target output — what the model should generate
-        target_text = str(row["correct_statement"])
+        in_enc = self.tok(inp, max_length=self.max_in, truncation=True,
+                          padding="max_length", return_tensors="pt")
+        tg_enc = self.tok(text_target=tgt, max_length=self.max_out,
+                          truncation=True, padding="max_length", return_tensors="pt")
 
-        # Tokenize input
-        input_encoding = self.tokenizer(
-            input_text,
-            max_length  = self.max_input_len,
-            truncation  = True,
-            padding     = "max_length",
-            return_tensors = "pt"
-        )
-
-        # Tokenize target output
-        # We tokenize the target separately with max_output_length
-        # Tokenize target output
-        target_encoding = self.tokenizer(
-            target_text,
-            max_length     = self.max_output_len,
-            truncation     = True,
-            padding        = "max_length",
-            return_tensors = "pt"
-        )
-        # Get label IDs
-        labels = target_encoding["input_ids"].squeeze(0)
-
-        # Replace padding token id with -100
-        # T5's loss function ignores positions where label=-100
-        # This means padding does not contribute to the loss
-        # Without this, the model would try to predict padding tokens
-        labels[labels == self.tokenizer.pad_token_id] = -100
+        labels = tg_enc["input_ids"].squeeze(0)
+        labels[labels == self.tok.pad_token_id] = -100
 
         return {
-            "input_ids"      : input_encoding["input_ids"].squeeze(0),
-            "attention_mask" : input_encoding["attention_mask"].squeeze(0),
+            "input_ids"      : in_enc["input_ids"].squeeze(0),
+            "attention_mask" : in_enc["attention_mask"].squeeze(0),
             "labels"         : labels
         }
 
+train_ds = CorrectionDataset(df_train, tokenizer, CONFIG["max_input_length"],
+                              CONFIG["max_output_length"])
+val_ds   = CorrectionDataset(df_val,   tokenizer, CONFIG["max_input_length"],
+                              CONFIG["max_output_length"])
 
-# Build datasets
-train_dataset = CorrectionDataset(
-    df_train, tokenizer,
-    CONFIG["max_input_length"], CONFIG["max_output_length"]
-)
-val_dataset = CorrectionDataset(
-    df_val, tokenizer,
-    CONFIG["max_input_length"], CONFIG["max_output_length"]
-)
+train_loader = DataLoader(train_ds, batch_size=CONFIG["batch_size"], shuffle=True,
+                          num_workers=CONFIG["num_workers"], pin_memory=True,
+                          persistent_workers=True)
+val_loader   = DataLoader(val_ds, batch_size=CONFIG["batch_size"]*2, shuffle=False,
+                          num_workers=CONFIG["num_workers"], pin_memory=True,
+                          persistent_workers=True)
 
-# Build DataLoaders
-train_loader = DataLoader(
-    train_dataset,
-    batch_size         = CONFIG["batch_size"],
-    shuffle            = True,
-    num_workers        = CONFIG["num_workers"],
-    pin_memory         = True if torch.cuda.is_available() else False,
-    persistent_workers = True if CONFIG["num_workers"] > 0 else False
-)
+print(f"   Train batches: {len(train_loader)} | Val batches: {len(val_loader)}\n")
 
-val_loader = DataLoader(
-    val_dataset,
-    batch_size         = CONFIG["batch_size"] * 2,
-    shuffle            = False,
-    num_workers        = CONFIG["num_workers"],
-    pin_memory         = True if torch.cuda.is_available() else False,
-    persistent_workers = True if CONFIG["num_workers"] > 0 else False
-)
-
-print(f"--- DataLoaders ready ---")
-print(f"   Train batches : {len(train_loader)}")
-print(f"   Val batches   : {len(val_loader)}\n")
-
-# =============================================================
-# STEP 6 — LOAD MODEL
-# T5ForConditionalGeneration is the encoder-decoder T5 model
-# =============================================================
-
-print("--- Loading Flan-t5-small model ---")
-print("   (downloads ~250MB on first run, cached after)\n")
-
-model = T5ForConditionalGeneration.from_pretrained(CONFIG["model_name"])
-model = model.to(device)
-
-# Enable gradient checkpointing to save VRAM
+# ── Model ─────────────────────────────────────────────────
+print("--- Loading Flan-T5-small ---")
+model = T5ForConditionalGeneration.from_pretrained(CONFIG["model_name"]).to(device)
 model.gradient_checkpointing_enable()
+print(f"   Parameters: {sum(p.numel() for p in model.parameters()):,}\n")
 
-total_params     = sum(p.numel() for p in model.parameters())
-trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-print(f"   Total parameters    : {total_params:,}")
-print(f"   Trainable parameters: {trainable_params:,}\n")
-
-# =============================================================
-# STEP 7 — OPTIMIZER AND SCHEDULER
-# =============================================================
-
-optimizer = AdamW(
-    model.parameters(),
-    lr           = CONFIG["learning_rate"],
-    weight_decay = CONFIG["weight_decay"]
-)
-
+optimizer = AdamW(model.parameters(), lr=CONFIG["learning_rate"],
+                  weight_decay=CONFIG["weight_decay"])
 total_steps  = (len(train_loader) // CONFIG["grad_accum"]) * CONFIG["epochs"]
 warmup_steps = int(total_steps * CONFIG["warmup_ratio"])
+scheduler    = get_cosine_schedule_with_warmup(optimizer, warmup_steps, total_steps)
+scaler       = GradScaler(enabled=CONFIG["use_fp16"])
 
-scheduler = get_linear_schedule_with_warmup(
-    optimizer,
-    num_warmup_steps   = warmup_steps,
-    num_training_steps = total_steps
-)
+print(f"   Epochs: {CONFIG['epochs']} | LR: {CONFIG['learning_rate']} "
+      f"| Effective batch: {CONFIG['batch_size']*CONFIG['grad_accum']}\n")
 
-print(f"--- Training schedule ---")
-print(f"   Epochs          : {CONFIG['epochs']}")
-print(f"   Total steps     : {total_steps}")
-print(f"   Warmup steps    : {warmup_steps}")
-print(f"   Effective batch : {CONFIG['batch_size'] * CONFIG['grad_accum']}")
-print(f"   Learning rate   : {CONFIG['learning_rate']}\n")
-
-# =============================================================
-# STEP 8 — TRAINING FUNCTION
-# =============================================================
-
-def train_one_epoch(model, loader, optimizer, scheduler, device, grad_accum, epoch):
+# ── Train ─────────────────────────────────────────────────
+def train_epoch(model, loader, optimizer, scheduler, scaler, device, grad_accum, ep):
     model.train()
     total_loss = 0
     optimizer.zero_grad()
-
     for step, batch in enumerate(loader):
-
-        input_ids      = batch["input_ids"].to(device, non_blocking=True)
-        attention_mask = batch["attention_mask"].to(device, non_blocking=True)
-        labels         = batch["labels"].to(device, non_blocking=True)
-
-        # T5 forward pass
-        # decoder_input_ids are automatically created from labels
-        # inside the model when labels are provided
-        outputs = model(
-            input_ids      = input_ids,
-            attention_mask = attention_mask,
-            labels         = labels
-        )
-
-        loss = outputs.loss / grad_accum
-        loss.backward()
-
-        total_loss += outputs.loss.item()
-
-        if (step + 1) % grad_accum == 0:
+        ids   = batch["input_ids"].to(device, non_blocking=True)
+        mask  = batch["attention_mask"].to(device, non_blocking=True)
+        lbls  = batch["labels"].to(device, non_blocking=True)
+        with autocast(enabled=CONFIG["use_fp16"]):
+            out  = model(input_ids=ids, attention_mask=mask, labels=lbls)
+            loss = out.loss / grad_accum
+        scaler.scale(loss).backward()
+        total_loss += out.loss.item()
+        if (step+1) % grad_accum == 0:
+            scaler.unscale_(optimizer)
             torch.nn.utils.clip_grad_norm_(model.parameters(), CONFIG["max_grad_norm"])
-            optimizer.step()
-            scheduler.step()
+            scaler.step(optimizer); scaler.update(); scheduler.step()
             optimizer.zero_grad()
-
-        if (step + 1) % 100 == 0:
-            avg_loss = total_loss / (step + 1)
-            lr       = scheduler.get_last_lr()[0]
-            print(f"   Epoch {epoch} | Step {step+1:>4}/{len(loader)} "
-                  f"| Loss: {avg_loss:.4f} "
-                  f"| LR: {lr:.2e}")
-
+        if (step+1) % 100 == 0:
+            print(f"   Ep {ep} | Step {step+1:>4}/{len(loader)} "
+                  f"| Loss: {total_loss/(step+1):.4f} "
+                  f"| LR: {scheduler.get_last_lr()[0]:.2e}")
             if torch.cuda.is_available():
-                used       = torch.cuda.memory_allocated() / 1e9
-                total_vram = torch.cuda.get_device_properties(0).total_memory / 1e9
-                print(f"             GPU memory: {used:.2f}/{total_vram:.1f} GB")
-
+                used = torch.cuda.memory_allocated()/1e9
+                tot  = torch.cuda.get_device_properties(0).total_memory/1e9
+                print(f"             GPU: {used:.2f}/{tot:.1f} GB")
     return total_loss / len(loader)
 
-
-# =============================================================
-# STEP 9 — VALIDATION FUNCTION
-# Generates actual text outputs and computes ROUGE score
-# =============================================================
-
-def validate(model, loader, device, num_samples=100):
-    """
-    Generates corrections for validation samples and
-    computes ROUGE score against the ground truth.
-
-    ROUGE-1: unigram overlap (individual word matches)
-    ROUGE-2: bigram overlap (two-word phrase matches)
-    ROUGE-L: longest common subsequence
-    """
+def validate(model, loader, device, num_gen=200):
     model.eval()
-    total_loss    = 0
-    generated     = []
-    references    = []
-
-    # Only generate text for first num_samples to save time
-    generate_count = 0
-
+    total_loss = 0
+    generated, references = [], []
+    gen_count = 0
     with torch.no_grad():
         for batch in loader:
-            input_ids      = batch["input_ids"].to(device, non_blocking=True)
-            attention_mask = batch["attention_mask"].to(device, non_blocking=True)
-            labels         = batch["labels"].to(device, non_blocking=True)
-
-            # Compute loss
-            outputs = model(
-                input_ids      = input_ids,
-                attention_mask = attention_mask,
-                labels         = labels
-            )
-            total_loss += outputs.loss.item()
-
-            # Generate text for ROUGE evaluation
-            if generate_count < num_samples:
-                generated_ids = model.generate(
-                    input_ids      = input_ids,
-                    attention_mask = attention_mask,
-                    max_length     = CONFIG["max_output_length"],
-                    num_beams      = 4,       # beam search for better quality
-                    early_stopping = True,
-                    no_repeat_ngram_size = 2  # prevents repetitive outputs
+            ids   = batch["input_ids"].to(device, non_blocking=True)
+            mask  = batch["attention_mask"].to(device, non_blocking=True)
+            lbls  = batch["labels"].to(device, non_blocking=True)
+            with autocast(enabled=CONFIG["use_fp16"]):
+                out = model(input_ids=ids, attention_mask=mask, labels=lbls)
+            total_loss += out.loss.item()
+            if gen_count < num_gen:
+                gen_ids = model.generate(
+                    input_ids=ids, attention_mask=mask,
+                    max_length           = CONFIG["max_output_length"],
+                    min_length           = 15,
+                    num_beams            = 4,
+                    length_penalty       = 2.0,
+                    early_stopping       = True,
+                    no_repeat_ngram_size = 3
                 )
-
-                # Decode generated token IDs back to text
-                decoded_preds = tokenizer.batch_decode(
-                    generated_ids,
-                    skip_special_tokens = True   # removes <pad>, </s> etc.
-                )
-
-                # Decode reference labels back to text
-                # Replace -100 with pad_token_id before decoding
-                label_ids = labels.clone()
-                label_ids[label_ids == -100] = tokenizer.pad_token_id
-                decoded_refs = tokenizer.batch_decode(
-                    label_ids,
-                    skip_special_tokens = True
-                )
-
-                generated.extend(decoded_preds)
-                references.extend(decoded_refs)
-                generate_count += len(input_ids)
-
+                preds = tokenizer.batch_decode(gen_ids, skip_special_tokens=True)
+                lab   = lbls.clone()
+                lab[lab == -100] = tokenizer.pad_token_id
+                refs  = tokenizer.batch_decode(lab, skip_special_tokens=True)
+                generated.extend(preds); references.extend(refs)
+                gen_count += len(ids)
     avg_loss = total_loss / len(loader)
+    scores = {}
+    if ROUGE_OK and generated:
+        r = rouge_metric.compute(predictions=generated, references=references)
+        scores = {"rouge1": round(r["rouge1"]*100,2),
+                  "rouge2": round(r["rouge2"]*100,2),
+                  "rougeL": round(r["rougeL"]*100,2)}
+    return avg_loss, scores, generated[:3], references[:3]
 
-    # Compute ROUGE scores
-    rouge_scores = {}
-    if ROUGE_AVAILABLE and generated:
-        scores = rouge.compute(
-            predictions = generated,
-            references  = references
-        )
-        rouge_scores = {
-            "rouge1": round(scores["rouge1"] * 100, 2),
-            "rouge2": round(scores["rouge2"] * 100, 2),
-            "rougeL": round(scores["rougeL"] * 100, 2),
-        }
-
-    return avg_loss, rouge_scores, generated[:5], references[:5]
-
-
-# =============================================================
-# STEP 10 — CORRECTION FUNCTION
-# Call this after training to correct any hallucinated statement
-# =============================================================
-
-def correct_statement(wrong_statement, evidence="", num_beams=4):
-    """
-    Generates a corrected version of a hallucinated statement.
-
-    Args:
-        wrong_statement : the hallucinated text to correct
-        evidence        : Wikipedia evidence to base correction on
-        num_beams       : beam search width (higher = better but slower)
-
-    Returns:
-        dict with corrected text and metadata
-    """
+def correct_statement(wrong, evidence=""):
+    """Generate corrected statement — used by predict.py and evaluate.py"""
     model.eval()
-
-    input_text = build_input_prompt(wrong_statement, evidence)
-
-    # Tokenize input
-    inputs = tokenizer(
-        input_text,
-        max_length     = CONFIG["max_input_length"],
-        truncation     = True,
-        padding        = "max_length",
-        return_tensors = "pt"
-    )
-
-    input_ids      = inputs["input_ids"].to(device)
-    attention_mask = inputs["attention_mask"].to(device)
-
+    prompt = build_prompt(wrong, evidence)
+    enc = tokenizer(prompt, max_length=CONFIG["max_input_length"],
+                    truncation=True, padding="max_length", return_tensors="pt")
     with torch.no_grad():
-        # Generate corrected text using beam search
-        output_ids = model.generate(
-            input_ids            = input_ids,
-            attention_mask       = attention_mask,
+        ids = model.generate(
+            input_ids            = enc["input_ids"].to(device),
+            attention_mask       = enc["attention_mask"].to(device),
             max_length           = CONFIG["max_output_length"],
-            num_beams            = num_beams,
+            min_length           = 15,
+            num_beams            = 4,
+            length_penalty       = 2.0,
             early_stopping       = True,
-            no_repeat_ngram_size = 2,
-            # Temperature controls randomness
-            # 1.0 = standard, lower = more deterministic
+            no_repeat_ngram_size = 3,
             do_sample            = False
         )
+    return tokenizer.decode(ids[0], skip_special_tokens=True)
 
-    # Decode output token IDs back to text
-    corrected = tokenizer.decode(
-        output_ids[0],
-        skip_special_tokens = True
-    )
-
-    return {
-        "original"  : wrong_statement,
-        "corrected" : corrected,
-        "evidence"  : evidence[:200] + "..." if len(evidence) > 200 else evidence,
-        "prompt"    : input_text[:200]
-    }
-
-
-# =============================================================
-# STEP 11 — MAIN TRAINING LOOP
-# =============================================================
-
+# ── Main loop ─────────────────────────────────────────────
 if __name__ == "__main__":
-
-    os.makedirs(CONFIG["output_dir"], exist_ok=True)
-
-    print("\n" + "=" * 60)
+    print("=" * 60)
     print("  CORRECTION ENGINE TRAINING STARTED")
     print("=" * 60)
 
-    best_rouge   = 0
-    train_losses = []
-    val_losses   = []
+    best_rouge, patience_counter = 0, 0
+    train_losses, val_losses, rouge_hist = [], [], []
 
-    for epoch in range(1, CONFIG["epochs"] + 1):
+    for epoch in range(1, CONFIG["epochs"]+1):
         print(f"\n{'='*60}")
         print(f"  Epoch {epoch} / {CONFIG['epochs']}")
         print(f"{'='*60}")
 
-        # Train
-        train_loss = train_one_epoch(
-            model, train_loader, optimizer, scheduler,
-            device, CONFIG["grad_accum"], epoch
-        )
-        train_losses.append(train_loss)
+        tr_loss = train_epoch(model, train_loader, optimizer, scheduler,
+                              scaler, device, CONFIG["grad_accum"], epoch)
+        train_losses.append(tr_loss)
 
-        # Validate
-        val_loss, rouge_scores, sample_preds, sample_refs = validate(
-            model, val_loader, device
-        )
+        val_loss, scores, sample_preds, sample_refs = validate(model, val_loader, device)
         val_losses.append(val_loss)
+        rouge_l = scores.get("rougeL", 0)
+        rouge_hist.append(rouge_l)
 
-        print(f"\n  Results — Epoch {epoch}:")
-        print(f"    Train Loss : {train_loss:.4f}")
-        print(f"    Val Loss   : {val_loss:.4f}")
+        print(f"\n  Epoch {epoch} Results:")
+        print(f"    Train Loss: {tr_loss:.4f} | Val Loss: {val_loss:.4f}")
+        if scores:
+            print(f"    ROUGE-1: {scores['rouge1']} | ROUGE-2: {scores['rouge2']} | ROUGE-L: {scores['rougeL']}")
 
-        if rouge_scores:
-            print(f"    ROUGE-1    : {rouge_scores.get('rouge1', 'N/A')}")
-            print(f"    ROUGE-2    : {rouge_scores.get('rouge2', 'N/A')}")
-            print(f"    ROUGE-L    : {rouge_scores.get('rougeL', 'N/A')}")
-            current_rouge = rouge_scores.get("rougeL", 0)
+        print(f"\n  Sample corrections:")
+        for p, r in zip(sample_preds, sample_refs):
+            print(f"    Generated : {p[:100]}")
+            print(f"    Reference : {r[:100]}\n")
+
+        if rouge_l > best_rouge:
+            best_rouge, patience_counter = rouge_l, 0
+            bp = os.path.join(CONFIG["output_dir"], "best")
+            model.save_pretrained(bp); tokenizer.save_pretrained(bp)
+            print(f"  ✅ Best model saved — ROUGE-L: {best_rouge:.2f}")
         else:
-            current_rouge = -val_loss   # use negative loss if ROUGE unavailable
+            patience_counter += 1
+            print(f"  ⚠ No improvement ({patience_counter}/{CONFIG['patience']})")
+            if patience_counter >= CONFIG["patience"]:
+                print("  🛑 Early stopping"); break
 
-        # Show sample predictions
-        print(f"\n  Sample corrections (Epoch {epoch}):")
-        for pred, ref in zip(sample_preds[:2], sample_refs[:2]):
-            print(f"    Generated : {pred[:100]}")
-            print(f"    Reference : {ref[:100]}")
-            print()
+        if torch.cuda.is_available(): torch.cuda.empty_cache()
 
-        # Save best model
-        if current_rouge > best_rouge:
-            best_rouge = current_rouge
-            best_path  = os.path.join(CONFIG["output_dir"], "best")
-            model.save_pretrained(best_path)
-            tokenizer.save_pretrained(best_path)
-            print(f"  ✅ Best model saved")
+    fp = os.path.join(CONFIG["output_dir"], "final")
+    model.save_pretrained(fp); tokenizer.save_pretrained(fp)
+    print(f"\n✅ Final model saved: {fp}")
 
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
+    # Save results
+    with open(os.path.join(CONFIG["output_dir"], "results.txt"), "w") as f:
+        f.write("CORRECTION ENGINE — RESULTS\n" + "="*50 + "\n\n")
+        f.write(f"Model        : {CONFIG['model_name']}\n")
+        f.write(f"LR           : {CONFIG['learning_rate']}\n")
+        f.write(f"Train Size   : {len(df_train)}\n")
+        f.write(f"Best ROUGE-L : {best_rouge:.2f}\n\n")
+        if scores:
+            f.write(f"ROUGE-1: {scores.get('rouge1')}\n")
+            f.write(f"ROUGE-2: {scores.get('rouge2')}\n")
+            f.write(f"ROUGE-L: {scores.get('rougeL')}\n")
 
-    # Save final model
-    final_path = os.path.join(CONFIG["output_dir"], "final")
-    model.save_pretrained(final_path)
-    tokenizer.save_pretrained(final_path)
-    print(f"\n✅ Final model saved to: {final_path}")
-
-    # ── SAVE RESULTS ──────────────────────────────────────
-    results_path = os.path.join(CONFIG["output_dir"], "results.txt")
-    with open(results_path, "w", encoding="utf-8") as f:
-        f.write("CORRECTION ENGINE — RESULTS\n")
-        f.write("=" * 50 + "\n\n")
-        f.write(f"Model       : {CONFIG['model_name']}\n")
-        f.write(f"Max Input   : {CONFIG['max_input_length']}\n")
-        f.write(f"Max Output  : {CONFIG['max_output_length']}\n")
-        f.write(f"Batch Size  : {CONFIG['batch_size']} (effective: {CONFIG['batch_size']*CONFIG['grad_accum']})\n")
-        f.write(f"Epochs      : {CONFIG['epochs']}\n")
-        f.write(f"Train Size  : {len(df_train)}\n")
-        f.write(f"Val Size    : {len(df_val)}\n\n")
-        if rouge_scores:
-            f.write("FINAL ROUGE SCORES:\n")
-            f.write(f"  ROUGE-1 : {rouge_scores.get('rouge1')}\n")
-            f.write(f"  ROUGE-2 : {rouge_scores.get('rouge2')}\n")
-            f.write(f"  ROUGE-L : {rouge_scores.get('rougeL')}\n")
-    print(f"✅ Results saved to: {results_path}")
-
-    # ── LOSS PLOT ──────────────────────────────────────────
-    plt.figure(figsize=(8, 5))
-    epochs_range = range(1, CONFIG["epochs"] + 1)
-    plt.plot(epochs_range, train_losses, "b-o", label="Train Loss", linewidth=2)
-    plt.plot(epochs_range, val_losses,   "r-o", label="Val Loss",   linewidth=2)
-    plt.xlabel("Epoch")
-    plt.ylabel("Loss")
-    plt.title("Correction Engine — Training & Validation Loss", fontweight="bold")
-    plt.legend()
-    plt.grid(True, alpha=0.3)
+    # Plot
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+    ep_done = range(1, len(train_losses)+1)
+    axes[0].plot(ep_done, train_losses, "b-o", label="Train Loss", lw=2)
+    axes[0].plot(ep_done, val_losses,   "r-o", label="Val Loss",   lw=2)
+    axes[0].set_title("Loss Curves", fontweight="bold")
+    axes[0].legend(); axes[0].grid(True, alpha=0.3)
+    axes[1].plot(ep_done, rouge_hist, "g-o", label="ROUGE-L", lw=2)
+    axes[1].axhline(y=30, color="orange", linestyle="--", label="Good (30)")
+    axes[1].set_title("ROUGE-L per Epoch", fontweight="bold")
+    axes[1].legend(); axes[1].grid(True, alpha=0.3)
     plt.tight_layout()
-    plot_path = os.path.join(CONFIG["output_dir"], "training_loss.png")
-    plt.savefig(plot_path, dpi=150)
-    print(f"✅ Plot saved to: {plot_path}")
+    plt.savefig(os.path.join(CONFIG["output_dir"], "training_loss.png"), dpi=150)
+    print("✅ Plot saved")
 
-    # ── TEST CORRECTIONS ──────────────────────────────────
+    # Test corrections — should now produce full sentences
     print("\n--- Testing Correction Engine ---")
-
     test_cases = [
-        {
-            "wrong"    : "Albert Einstein invented the telephone.",
-            "evidence" : "Alexander Graham Bell is credited with inventing the telephone in 1876."
-        },
-        {
-            "wrong"    : "The Great Wall of China is visible from space with the naked eye.",
-            "evidence" : "Contrary to popular belief, the Great Wall of China is not visible from space with the naked eye."
-        },
-        {
-            "wrong"    : "The Amazon is the longest river in the world.",
-            "evidence" : "The Nile is generally considered the longest river in the world at 6,650 km. The Amazon is the largest by water flow."
-        },
-        {
-            "wrong"    : "Shakespeare was born in London.",
-            "evidence" : "William Shakespeare was born in Stratford-upon-Avon, Warwickshire, England in 1564."
-        },
-        {
-            "wrong"    : "Water boils at 50 degrees Celsius at sea level.",
-            "evidence" : "Water boils at 100 degrees Celsius (212 degrees Fahrenheit) at standard atmospheric pressure (sea level)."
-        },
+        ("Albert Einstein invented the telephone.",
+         "Alexander Graham Bell is credited with inventing the telephone in 1876."),
+        ("The Amazon is the longest river in the world.",
+         "The Nile is the longest river at 6,650 km. The Amazon is the largest by water flow."),
+        ("Shakespeare was born in London.",
+         "William Shakespeare was born in Stratford-upon-Avon, England in 1564."),
+        ("Water boils at 50 degrees Celsius at sea level.",
+         "Water boils at 100 degrees Celsius at standard atmospheric pressure."),
+        ("The Great Wall of China is visible from space.",
+         "The Great Wall of China is NOT visible from space with the naked eye."),
     ]
-
     print()
-    for i, case in enumerate(test_cases, 1):
-        result = correct_statement(case["wrong"], case["evidence"])
-        print(f"  Example {i}:")
-        print(f"    ❌ Wrong    : {result['original']}")
-        print(f"    ✅ Corrected: {result['corrected']}")
-        print(f"    📖 Evidence : {case['evidence'][:100]}...")
+    for i, (wrong, ev) in enumerate(test_cases, 1):
+        corrected = correct_statement(wrong, ev)
+        print(f"  {i}. ❌ {wrong}")
+        print(f"     ✅ {corrected}")
+        print(f"     📖 {ev[:80]}...")
         print()
 
-    print("=" * 60)
-    print("  PHASE 6 COMPLETE")
-    print(f"  Best model : {os.path.abspath(os.path.join(CONFIG['output_dir'], 'best'))}")
-    print(f"  Final model: {os.path.abspath(final_path)}")
-    print("=" * 60)
+    print("="*60)
+    print(f"  PHASE 6 COMPLETE | Best ROUGE-L: {best_rouge:.2f}")
+    print("="*60)

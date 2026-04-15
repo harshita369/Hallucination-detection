@@ -1,14 +1,16 @@
 """
 =============================================================
-  Hallucination Detector — Improved Inference Script
-  Loads ALL trained models and runs full pipeline.
+  Hallucination Detector — Full Pipeline Inference
+  GPU    : RTX 3050 Mobile 4GB — Linux
 
-  IMPROVEMENTS over v1:
-  1. Loads tuned threshold from Phase 3
-  2. Runs NLI verification alongside detection
-  3. Fetches Wikipedia evidence automatically
-  4. Runs correction engine if hallucinated
-  5. Shows weighted combined score
+  FIXES vs old pridict.py:
+  1. Detection runs STATEMENT-ONLY (no evidence needed)
+     — old model needed evidence and failed without it
+  2. Wikipedia evidence fetched and used for NLI+correction
+     only (not for the detection decision itself)
+  3. Weighted combination: 60% detection + 40% NLI
+  4. Threshold loaded from threshold.txt (tuned value)
+  5. Correction generates full sentences (min_length=15)
 
   Usage:
     python predict.py "The Eiffel Tower is in Berlin."
@@ -26,40 +28,40 @@ from transformers import (
     T5ForConditionalGeneration
 )
 
-# ── CONFIG ─────────────────────────────────────────────────
+# ── Paths ─────────────────────────────────────────────────
 DETECTOR_PATH  = "./detector_model/best"
 NLI_PATH       = "./nli_model/best"
 CORRECTOR_PATH = "./corrector_model/best"
-MAX_LENGTH     = 128
+MAX_LEN        = 128
 
-# ── DEVICE ─────────────────────────────────────────────────
+# ── Device ────────────────────────────────────────────────
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# ── LOAD THRESHOLD ─────────────────────────────────────────
+# ── Load threshold ────────────────────────────────────────
 threshold = 0.5
 t_file = os.path.join(DETECTOR_PATH, "threshold.txt")
 if os.path.exists(t_file):
     with open(t_file) as f:
         threshold = float(f.read().strip())
 
-# ── LOAD MODELS ────────────────────────────────────────────
+# ── Load models ───────────────────────────────────────────
 print("Loading models...")
 
-det_tokenizer = AutoTokenizer.from_pretrained(DETECTOR_PATH)
-det_model     = AutoModelForSequenceClassification.from_pretrained(DETECTOR_PATH).to(device)
+det_tok   = AutoTokenizer.from_pretrained(DETECTOR_PATH)
+det_model = AutoModelForSequenceClassification.from_pretrained(DETECTOR_PATH).to(device)
 det_model.eval()
 
-nli_tokenizer = AutoTokenizer.from_pretrained(NLI_PATH)
-nli_model     = AutoModelForSequenceClassification.from_pretrained(NLI_PATH).to(device)
+nli_tok   = AutoTokenizer.from_pretrained(NLI_PATH)
+nli_model = AutoModelForSequenceClassification.from_pretrained(NLI_PATH).to(device)
 nli_model.eval()
 
-cor_tokenizer = T5Tokenizer.from_pretrained(CORRECTOR_PATH, legacy=False)
-cor_model     = T5ForConditionalGeneration.from_pretrained(CORRECTOR_PATH).to(device)
+cor_tok   = T5Tokenizer.from_pretrained(CORRECTOR_PATH, legacy=False)
+cor_model = T5ForConditionalGeneration.from_pretrained(CORRECTOR_PATH).to(device)
 cor_model.eval()
 
-# ── LOAD RETRIEVER ─────────────────────────────────────────
+# ── Load retriever ────────────────────────────────────────
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 try:
-    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     from retriever import get_evidence
     RETRIEVER = True
 except:
@@ -68,104 +70,121 @@ except:
         return {"evidence": "", "found": False}
 
 print(f"✅ Models loaded | Device: {device} | Threshold: {threshold}")
-print(f"   Wikipedia retrieval: {'enabled' if RETRIEVER else 'disabled'}\n")
+print(f"   Wikipedia: {'enabled' if RETRIEVER else 'disabled'}\n")
 
 
-# ── INFERENCE FUNCTIONS ────────────────────────────────────
+# ── INFERENCE FUNCTIONS ───────────────────────────────────
 
-def detect(statement, evidence=""):
-    enc = det_tokenizer(str(statement), str(evidence),
-                        max_length=MAX_LENGTH, truncation=True,
-                        padding="max_length", return_tensors="pt")
+def detect(statement):
+    """
+    STATEMENT-ONLY detection.
+    The model was trained without evidence so it works
+    purely on language patterns — no Wikipedia needed.
+    """
+    enc = det_tok(str(statement), max_length=MAX_LEN,
+                  truncation=True, padding="max_length", return_tensors="pt")
     with torch.no_grad():
         out = det_model(input_ids=enc["input_ids"].to(device),
                         attention_mask=enc["attention_mask"].to(device))
-    probs = torch.softmax(out.logits, dim=1)[0]
+    probs  = torch.softmax(out.logits, dim=1)[0]
     h_prob = probs[1].item()
     return {
-        "label"     : "Hallucinated" if h_prob > threshold else "Factual",
-        "h_prob"    : round(h_prob * 100, 2),
-        "f_prob"    : round(probs[0].item() * 100, 2),
-        "raw"       : h_prob
+        "label"  : "Hallucinated" if h_prob > threshold else "Factual",
+        "h_prob" : round(h_prob * 100, 2),
+        "f_prob" : round(probs[0].item() * 100, 2),
+        "raw"    : h_prob
     }
 
 
 def nli_check(premise, hypothesis):
-    enc = nli_tokenizer(str(premise), str(hypothesis),
-                        max_length=MAX_LENGTH, truncation=True,
-                        padding="max_length", return_tensors="pt")
+    """NLI verification — only called when evidence is available."""
+    enc = nli_tok(str(premise), str(hypothesis), max_length=MAX_LEN,
+                  truncation=True, padding="max_length", return_tensors="pt")
     with torch.no_grad():
         out = nli_model(input_ids=enc["input_ids"].to(device),
                         attention_mask=enc["attention_mask"].to(device))
-    probs     = torch.softmax(out.logits, dim=1)[0]
-    label_idx = torch.argmax(probs).item()
-    label_map = {0: "Entailment", 1: "Neutral", 2: "Contradiction"}
+    probs = torch.softmax(out.logits, dim=1)[0]
+    idx   = torch.argmax(probs).item()
+    lbls  = {0:"Entailment", 1:"Neutral", 2:"Contradiction"}
     return {
-        "label"         : label_map[label_idx],
-        "entailment"    : round(probs[0].item() * 100, 2),
-        "neutral"       : round(probs[1].item() * 100, 2),
-        "contradiction" : round(probs[2].item() * 100, 2),
-        "raw_contra"    : probs[2].item()
+        "label"        : lbls[idx],
+        "entailment"   : round(probs[0].item()*100, 2),
+        "neutral"      : round(probs[1].item()*100, 2),
+        "contradiction": round(probs[2].item()*100, 2),
+        "raw_contra"   : probs[2].item()
     }
 
 
 def correct(statement, evidence=""):
-    if evidence:
-        prompt = (f"Given the following evidence: '{evidence}' "
-                  f"The statement '{statement}' is factually incorrect. "
-                  f"Write a complete corrected factual sentence:")
+    """Generate a corrected full sentence."""
+    if evidence and evidence.strip():
+        prompt = (f"Task: Correct the factual error in the statement below. "
+                  f"Use the evidence provided. "
+                  f"Write one complete corrected sentence.\n"
+                  f"Evidence: {evidence.strip()}\n"
+                  f"Incorrect statement: {statement}\n"
+                  f"Corrected statement:")
     else:
-        prompt = (f"The following statement is factually incorrect: '{statement}' "
-                  f"Write a complete corrected factual sentence:")
+        prompt = (f"Task: Correct the factual error in the statement below. "
+                  f"Write one complete corrected sentence.\n"
+                  f"Incorrect statement: {statement}\n"
+                  f"Corrected statement:")
 
-    enc = cor_tokenizer(prompt, max_length=256, truncation=True,
-                        padding="max_length", return_tensors="pt")
+    enc = cor_tok(prompt, max_length=256, truncation=True,
+                  padding="max_length", return_tensors="pt")
     with torch.no_grad():
         ids = cor_model.generate(
-            input_ids      = enc["input_ids"].to(device),
-            attention_mask = enc["attention_mask"].to(device),
-            max_length     = 128, min_length=8,
-            num_beams      = 4, length_penalty=1.5,
-            early_stopping = True, no_repeat_ngram_size=3
+            input_ids            = enc["input_ids"].to(device),
+            attention_mask       = enc["attention_mask"].to(device),
+            max_length           = 128,
+            min_length           = 15,
+            num_beams            = 4,
+            length_penalty       = 2.0,
+            early_stopping       = True,
+            no_repeat_ngram_size = 3,
+            do_sample            = False
         )
-    return cor_tokenizer.decode(ids[0], skip_special_tokens=True)
+    return cor_tok.decode(ids[0], skip_special_tokens=True)
 
 
 def full_pipeline(statement):
-    """Run the full 4-step pipeline on a statement."""
+    """
+    Full 4-step pipeline:
+    1. Detection (statement-only — always works)
+    2. Wikipedia evidence fetch (optional, enhances NLI)
+    3. NLI verification (only if evidence found)
+    4. Correction (if hallucinated)
+    """
+    # Step 1 — Detection (statement only, no evidence)
+    det = detect(statement)
 
-    # Step 1 — Fetch evidence
+    # Step 2 — Fetch Wikipedia evidence (for NLI + correction)
     evidence = ""
-    source   = "none"
+    ev_source = ""
     if RETRIEVER:
         ev = get_evidence(statement, verbose=False)
         if ev.get("found"):
-            evidence = ev["evidence"]
-            source   = ev.get("source", "Wikipedia")
+            evidence  = ev.get("evidence", "")
+            ev_source = ev.get("source", "Wikipedia")
 
-    # Step 2 — Detection
-    det = detect(statement, evidence)
-
-    # Step 3 — NLI verification
+    # Step 3 — NLI (only if evidence found)
     nli = None
-    if evidence:
+    if evidence and evidence.strip():
         nli = nli_check(evidence, statement)
 
     # Step 4 — Weighted combined verdict
-    c_prob = nli["raw_contra"] if nli else det["raw"]
+    # Detection is always available; NLI supplements it when evidence exists
+    c_prob   = nli["raw_contra"] if nli else det["raw"]
     weighted = 0.6 * det["raw"] + 0.4 * c_prob
 
     if weighted > 0.6:
-        verdict    = "Hallucinated"
-        confidence = "HIGH"
+        verdict, conf = "Hallucinated", "HIGH"
     elif weighted > 0.35:
-        verdict    = "Hallucinated"
-        confidence = "MEDIUM"
+        verdict, conf = "Hallucinated", "MEDIUM"
     else:
-        verdict    = "Factual"
-        confidence = "LOW"
+        verdict, conf = "Factual", "LOW"
 
-    # Step 5 — Correction if needed
+    # Step 5 — Correction if hallucinated
     corrected = None
     if verdict == "Hallucinated":
         corrected = correct(statement, evidence)
@@ -173,37 +192,36 @@ def full_pipeline(statement):
     return {
         "statement"  : statement,
         "evidence"   : evidence,
-        "source"     : source,
+        "ev_source"  : ev_source,
         "detection"  : det,
         "nli"        : nli,
         "verdict"    : verdict,
-        "confidence" : confidence,
+        "confidence" : conf,
         "weighted"   : round(weighted * 100, 2),
         "corrected"  : corrected,
     }
 
 
 def display(result):
-    """Pretty print pipeline result."""
+    """Pretty-print pipeline result."""
     flag = "⚠  HALLUCINATED" if result["verdict"] == "Hallucinated" else "✅ FACTUAL"
-    print(f"\n  {'─'*55}")
+    print(f"\n  {'─'*56}")
     print(f"  {flag}")
-    print(f"  {'─'*55}")
+    print(f"  {'─'*56}")
     print(f"  Statement  : {result['statement']}")
     print(f"  Detection  : {result['detection']['h_prob']}% hallucination "
           f"(threshold: {threshold})")
 
     if result["nli"]:
-        nli = result["nli"]
-        print(f"  NLI        : {nli['label']} "
-              f"(Entailment: {nli['entailment']}% | "
-              f"Contradiction: {nli['contradiction']}%)")
+        n = result["nli"]
+        print(f"  NLI        : {n['label']} | Entailment: {n['entailment']}% "
+              f"| Contradiction: {n['contradiction']}%")
 
     print(f"  Weighted   : {result['weighted']}% | Confidence: {result['confidence']}")
 
     if result["evidence"]:
-        ev_preview = result["evidence"][:120].replace("\n", " ")
-        print(f"  Evidence   : [{result['source']}] {ev_preview}...")
+        prev = result["evidence"][:120].replace("\n", " ")
+        print(f"  Evidence   : [{result['ev_source']}] {prev}...")
 
     if result["corrected"]:
         print(f"\n  ✏ Corrected: {result['corrected']}")
@@ -211,34 +229,31 @@ def display(result):
     print()
 
 
-# ── MAIN ───────────────────────────────────────────────────
+# ── MAIN ──────────────────────────────────────────────────
 if __name__ == "__main__":
 
     # Command-line mode
     if len(sys.argv) > 1:
-        statement = " ".join(sys.argv[1:])
-        print(f"\nAnalyzing: {statement}")
-        result = full_pipeline(statement)
-        display(result)
+        stmt = " ".join(sys.argv[1:])
+        print(f"\nAnalyzing: {stmt}")
+        display(full_pipeline(stmt))
         sys.exit(0)
 
     # Interactive mode
-    print("=" * 57)
+    print("=" * 58)
     print("  Hallucination Detector — Full Pipeline")
-    print("  Type a statement and press Enter.")
-    print("  Commands: 'quit' to exit")
-    print("=" * 57)
+    print("  Detection works WITHOUT Wikipedia evidence.")
+    print("  Wikipedia is used for NLI & correction only.")
+    print("  Type 'quit' to exit.")
+    print("=" * 58)
 
     while True:
         try:
-            statement = input("\n> ").strip()
+            stmt = input("\n> ").strip()
         except (EOFError, KeyboardInterrupt):
-            print("\nExiting.")
-            break
+            print("\nExiting."); break
 
-        if not statement or statement.lower() in ("quit", "exit", "q"):
-            print("Exiting.")
-            break
+        if not stmt or stmt.lower() in ("quit","exit","q"):
+            print("Exiting."); break
 
-        result = full_pipeline(statement)
-        display(result)
+        display(full_pipeline(stmt))

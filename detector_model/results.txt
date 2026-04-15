@@ -1,18 +1,18 @@
-HALLUCINATION DETECTION MODEL — IMPROVED RESULTS
+HALLUCINATION DETECTION MODEL — STATEMENT-ONLY
 ==================================================
 
 Model         : roberta-base
+Training Mode : Statement-Only (no evidence)
 Train Samples : 134810
-Best Threshold: 0.58
-Best Macro F1 : 0.8916
-ROC-AUC       : 0.9567
+Threshold     : 0.58
+Best F1       : 0.8723
+ROC-AUC       : 0.9420
 
-CLASSIFICATION REPORT:
               precision    recall  f1-score   support
 
-     Factual       0.91      0.94      0.93     21682
-Hallucinated       0.89      0.83      0.86     12021
+     Factual       0.89      0.93      0.91     21682
+Hallucinated       0.87      0.80      0.83     12021
 
-    accuracy                           0.90     33703
-   macro avg       0.90      0.89      0.89     33703
-weighted avg       0.90      0.90      0.90     33703
+    accuracy                           0.89     33703
+   macro avg       0.88      0.87      0.87     33703
+weighted avg       0.88      0.89      0.88     33703

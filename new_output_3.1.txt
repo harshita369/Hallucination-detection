@@ -1,0 +1,539 @@
+03_train_detector.py
+============================================================
+  Phase 3 — Detection Model (STATEMENT-ONLY)
+============================================================
+
+✅ GPU : NVIDIA GeForce RTX 3050 Laptop GPU
+   VRAM: 4.0 GB
+   Device: cuda | FP16: True
+
+--- Loading data ---
+   Train : 134810 | Test : 33703
+   Factual(0): 86727 | Hallucinated(1): 48083
+   ⚠ Training on STATEMENT ONLY (no evidence — core fix)
+
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+   Train batches: 16852 | Test batches: 2107
+
+Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 197/197 [00:00<00:00, 3135.51it/s]
+RobertaForSequenceClassification LOAD REPORT from: roberta-base
+Key                             | Status     | Details
+--------------------------------+------------+--------
+lm_head.layer_norm.bias         | UNEXPECTED |        
+lm_head.bias                    | UNEXPECTED |        
+lm_head.dense.weight            | UNEXPECTED |        
+roberta.embeddings.position_ids | UNEXPECTED |        
+lm_head.layer_norm.weight       | UNEXPECTED |        
+lm_head.dense.bias              | UNEXPECTED |        
+classifier.dense.bias           | MISSING    |        
+classifier.out_proj.weight      | MISSING    |        
+classifier.dense.weight         | MISSING    |        
+classifier.out_proj.bias        | MISSING    |        
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+   Parameters: 124,647,170
+
+   Epochs: 5 | Effective batch: 32
+
+============================================================
+  TRAINING STARTED (Statement-Only Mode)
+============================================================
+
+============================================================
+  Epoch 1 / 5
+============================================================
+============================================================
+  Phase 3 — Detection Model (STATEMENT-ONLY)
+============================================================
+
+✅ GPU : NVIDIA GeForce RTX 3050 Laptop GPU
+   VRAM: 4.0 GB
+   Device: cuda | FP16: True
+
+--- Loading data ---
+   Train : 134810 | Test : 33703
+   Factual(0): 86727 | Hallucinated(1): 48083
+   ⚠ Training on STATEMENT ONLY (no evidence — core fix)
+
+   Train batches: 16852 | Test batches: 2107
+
+Loading weights: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 197/197 [00:00<00:00, 10700.59it/s]
+RobertaForSequenceClassification LOAD REPORT from: roberta-base
+Key                             | Status     | Details
+--------------------------------+------------+--------
+roberta.embeddings.position_ids | UNEXPECTED |        
+lm_head.dense.bias              | UNEXPECTED |        
+lm_head.bias                    | UNEXPECTED |        
+lm_head.layer_norm.bias         | UNEXPECTED |        
+lm_head.layer_norm.weight       | UNEXPECTED |        
+lm_head.dense.weight            | UNEXPECTED |        
+classifier.dense.bias           | MISSING    |        
+classifier.out_proj.bias        | MISSING    |        
+classifier.out_proj.weight      | MISSING    |        
+classifier.dense.weight         | MISSING    |        
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+   Parameters: 124,647,170
+
+   Epochs: 5 | Effective batch: 32
+
+   Ep 1 | Step   500/16852 | Loss: 0.7095 | Acc: 0.6148 | LR: 1.19e-06
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  1000/16852 | Loss: 0.7048 | Acc: 0.6111 | LR: 2.37e-06
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  1500/16852 | Loss: 0.6991 | Acc: 0.6141 | LR: 3.56e-06
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  2000/16852 | Loss: 0.6795 | Acc: 0.6348 | LR: 4.75e-06
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  2500/16852 | Loss: 0.6564 | Acc: 0.6605 | LR: 5.94e-06
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  3000/16852 | Loss: 0.6391 | Acc: 0.6766 | LR: 7.12e-06
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  3500/16852 | Loss: 0.6224 | Acc: 0.6928 | LR: 8.31e-06
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  4000/16852 | Loss: 0.6103 | Acc: 0.7037 | LR: 9.50e-06
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  4500/16852 | Loss: 0.5998 | Acc: 0.7140 | LR: 1.07e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  5000/16852 | Loss: 0.5904 | Acc: 0.7218 | LR: 1.19e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  5500/16852 | Loss: 0.5810 | Acc: 0.7303 | LR: 1.31e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  6000/16852 | Loss: 0.5744 | Acc: 0.7353 | LR: 1.42e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  6500/16852 | Loss: 0.5682 | Acc: 0.7411 | LR: 1.54e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  7000/16852 | Loss: 0.5639 | Acc: 0.7449 | LR: 1.66e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  7500/16852 | Loss: 0.5593 | Acc: 0.7496 | LR: 1.78e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  8000/16852 | Loss: 0.5551 | Acc: 0.7531 | LR: 1.90e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  8500/16852 | Loss: 0.5517 | Acc: 0.7567 | LR: 2.00e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  9000/16852 | Loss: 0.5473 | Acc: 0.7603 | LR: 1.98e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step  9500/16852 | Loss: 0.5436 | Acc: 0.7639 | LR: 1.97e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step 10000/16852 | Loss: 0.5405 | Acc: 0.7662 | LR: 1.96e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step 10500/16852 | Loss: 0.5374 | Acc: 0.7689 | LR: 1.95e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step 11000/16852 | Loss: 0.5352 | Acc: 0.7712 | LR: 1.93e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step 11500/16852 | Loss: 0.5331 | Acc: 0.7732 | LR: 1.92e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step 12000/16852 | Loss: 0.5305 | Acc: 0.7759 | LR: 1.91e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step 12500/16852 | Loss: 0.5275 | Acc: 0.7783 | LR: 1.89e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step 13000/16852 | Loss: 0.5250 | Acc: 0.7806 | LR: 1.88e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step 13500/16852 | Loss: 0.5229 | Acc: 0.7824 | LR: 1.87e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step 14000/16852 | Loss: 0.5204 | Acc: 0.7844 | LR: 1.85e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step 14500/16852 | Loss: 0.5182 | Acc: 0.7861 | LR: 1.84e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step 15000/16852 | Loss: 0.5162 | Acc: 0.7881 | LR: 1.83e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step 15500/16852 | Loss: 0.5143 | Acc: 0.7897 | LR: 1.81e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step 16000/16852 | Loss: 0.5128 | Acc: 0.7909 | LR: 1.80e-05
+             GPU: 1.52/4.0 GB
+   Ep 1 | Step 16500/16852 | Loss: 0.5114 | Acc: 0.7920 | LR: 1.79e-05
+             GPU: 1.52/4.0 GB
+
+  Results — Epoch 1:
+    Train Loss        : 0.5104
+    Val Acc           : 0.8487
+    Macro F1          : 0.8374
+    Best threshold    : 0.7 → F1: 0.8445
+    Factual    P/R/F  : 0.897/0.864/0.880
+    Hallucinated P/R/F: 0.770/0.821/0.795
+Writing model shards: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  1.75it/s]
+
+  ✅ Best model saved — F1: 0.8374 | Threshold: 0.7
+
+============================================================
+  Epoch 2 / 5
+============================================================
+   Ep 2 | Step   500/16852 | Loss: 0.4362 | Acc: 0.8615 | LR: 1.76e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  1000/16852 | Loss: 0.4359 | Acc: 0.8614 | LR: 1.75e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  1500/16852 | Loss: 0.4327 | Acc: 0.8628 | LR: 1.74e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  2000/16852 | Loss: 0.4344 | Acc: 0.8609 | LR: 1.72e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  2500/16852 | Loss: 0.4338 | Acc: 0.8607 | LR: 1.71e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  3000/16852 | Loss: 0.4345 | Acc: 0.8595 | LR: 1.70e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  3500/16852 | Loss: 0.4342 | Acc: 0.8594 | LR: 1.69e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  4000/16852 | Loss: 0.4338 | Acc: 0.8605 | LR: 1.67e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  4500/16852 | Loss: 0.4341 | Acc: 0.8607 | LR: 1.66e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  5000/16852 | Loss: 0.4334 | Acc: 0.8617 | LR: 1.65e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  5500/16852 | Loss: 0.4321 | Acc: 0.8621 | LR: 1.63e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  6000/16852 | Loss: 0.4324 | Acc: 0.8613 | LR: 1.62e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  6500/16852 | Loss: 0.4324 | Acc: 0.8613 | LR: 1.61e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  7000/16852 | Loss: 0.4323 | Acc: 0.8616 | LR: 1.59e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  7500/16852 | Loss: 0.4325 | Acc: 0.8614 | LR: 1.58e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  8000/16852 | Loss: 0.4325 | Acc: 0.8614 | LR: 1.57e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  8500/16852 | Loss: 0.4322 | Acc: 0.8616 | LR: 1.55e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  9000/16852 | Loss: 0.4319 | Acc: 0.8620 | LR: 1.54e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step  9500/16852 | Loss: 0.4316 | Acc: 0.8623 | LR: 1.53e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step 10000/16852 | Loss: 0.4311 | Acc: 0.8622 | LR: 1.51e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step 10500/16852 | Loss: 0.4306 | Acc: 0.8625 | LR: 1.50e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step 11000/16852 | Loss: 0.4300 | Acc: 0.8629 | LR: 1.49e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step 11500/16852 | Loss: 0.4296 | Acc: 0.8627 | LR: 1.47e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step 12000/16852 | Loss: 0.4296 | Acc: 0.8625 | LR: 1.46e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step 12500/16852 | Loss: 0.4294 | Acc: 0.8626 | LR: 1.45e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step 13000/16852 | Loss: 0.4290 | Acc: 0.8632 | LR: 1.43e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step 13500/16852 | Loss: 0.4287 | Acc: 0.8635 | LR: 1.42e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step 14000/16852 | Loss: 0.4288 | Acc: 0.8635 | LR: 1.41e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step 14500/16852 | Loss: 0.4281 | Acc: 0.8640 | LR: 1.40e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step 15000/16852 | Loss: 0.4277 | Acc: 0.8640 | LR: 1.38e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step 15500/16852 | Loss: 0.4272 | Acc: 0.8643 | LR: 1.37e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step 16000/16852 | Loss: 0.4269 | Acc: 0.8645 | LR: 1.36e-05
+             GPU: 1.52/4.0 GB
+   Ep 2 | Step 16500/16852 | Loss: 0.4267 | Acc: 0.8647 | LR: 1.34e-05
+             GPU: 1.52/4.0 GB
+
+  Results — Epoch 2:
+    Train Loss        : 0.4265
+    Val Acc           : 0.8628
+    Macro F1          : 0.8520
+    Best threshold    : 0.6 → F1: 0.8577
+    Factual    P/R/F  : 0.904/0.881/0.892
+    Hallucinated P/R/F: 0.794/0.830/0.812
+Writing model shards: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  1.69it/s]
+
+  ✅ Best model saved — F1: 0.8520 | Threshold: 0.6
+
+============================================================
+  Epoch 3 / 5
+============================================================
+   Ep 3 | Step   500/16852 | Loss: 0.3961 | Acc: 0.8838 | LR: 1.32e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  1000/16852 | Loss: 0.3954 | Acc: 0.8865 | LR: 1.31e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  1500/16852 | Loss: 0.3939 | Acc: 0.8889 | LR: 1.29e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  2000/16852 | Loss: 0.3943 | Acc: 0.8894 | LR: 1.28e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  2500/16852 | Loss: 0.3927 | Acc: 0.8912 | LR: 1.27e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  3000/16852 | Loss: 0.3927 | Acc: 0.8907 | LR: 1.25e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  3500/16852 | Loss: 0.3909 | Acc: 0.8912 | LR: 1.24e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  4000/16852 | Loss: 0.3909 | Acc: 0.8911 | LR: 1.23e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  4500/16852 | Loss: 0.3893 | Acc: 0.8921 | LR: 1.21e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  5000/16852 | Loss: 0.3884 | Acc: 0.8931 | LR: 1.20e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  5500/16852 | Loss: 0.3879 | Acc: 0.8932 | LR: 1.19e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  6000/16852 | Loss: 0.3876 | Acc: 0.8939 | LR: 1.18e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  6500/16852 | Loss: 0.3874 | Acc: 0.8940 | LR: 1.16e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  7000/16852 | Loss: 0.3881 | Acc: 0.8934 | LR: 1.15e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  7500/16852 | Loss: 0.3884 | Acc: 0.8935 | LR: 1.14e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  8000/16852 | Loss: 0.3890 | Acc: 0.8931 | LR: 1.12e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  8500/16852 | Loss: 0.3888 | Acc: 0.8932 | LR: 1.11e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  9000/16852 | Loss: 0.3886 | Acc: 0.8934 | LR: 1.10e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step  9500/16852 | Loss: 0.3883 | Acc: 0.8937 | LR: 1.08e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step 10000/16852 | Loss: 0.3887 | Acc: 0.8937 | LR: 1.07e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step 10500/16852 | Loss: 0.3886 | Acc: 0.8941 | LR: 1.06e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step 11000/16852 | Loss: 0.3885 | Acc: 0.8943 | LR: 1.04e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step 11500/16852 | Loss: 0.3881 | Acc: 0.8948 | LR: 1.03e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step 12000/16852 | Loss: 0.3883 | Acc: 0.8946 | LR: 1.02e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step 12500/16852 | Loss: 0.3883 | Acc: 0.8947 | LR: 1.00e-05
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step 13000/16852 | Loss: 0.3879 | Acc: 0.8946 | LR: 9.90e-06
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step 13500/16852 | Loss: 0.3877 | Acc: 0.8948 | LR: 9.77e-06
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step 14000/16852 | Loss: 0.3879 | Acc: 0.8947 | LR: 9.64e-06
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step 14500/16852 | Loss: 0.3876 | Acc: 0.8947 | LR: 9.51e-06
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step 15000/16852 | Loss: 0.3878 | Acc: 0.8945 | LR: 9.38e-06
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step 15500/16852 | Loss: 0.3874 | Acc: 0.8946 | LR: 9.25e-06
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step 16000/16852 | Loss: 0.3874 | Acc: 0.8944 | LR: 9.11e-06
+             GPU: 1.52/4.0 GB
+   Ep 3 | Step 16500/16852 | Loss: 0.3875 | Acc: 0.8942 | LR: 8.98e-06
+             GPU: 1.52/4.0 GB
+
+  Results — Epoch 3:
+    Train Loss        : 0.3873
+    Val Acc           : 0.8681
+    Macro F1          : 0.8584
+    Best threshold    : 0.68 → F1: 0.8677
+    Factual    P/R/F  : 0.914/0.878/0.895
+    Hallucinated P/R/F: 0.794/0.851/0.821
+Writing model shards: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  1.60it/s]
+
+  ✅ Best model saved — F1: 0.8584 | Threshold: 0.68
+
+============================================================
+  Epoch 4 / 5
+============================================================
+   Ep 4 | Step   500/16852 | Loss: 0.3529 | Acc: 0.9207 | LR: 8.76e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  1000/16852 | Loss: 0.3573 | Acc: 0.9169 | LR: 8.62e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  1500/16852 | Loss: 0.3581 | Acc: 0.9149 | LR: 8.49e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  2000/16852 | Loss: 0.3569 | Acc: 0.9157 | LR: 8.36e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  2500/16852 | Loss: 0.3588 | Acc: 0.9160 | LR: 8.23e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  3000/16852 | Loss: 0.3588 | Acc: 0.9151 | LR: 8.10e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  3500/16852 | Loss: 0.3580 | Acc: 0.9157 | LR: 7.97e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  4000/16852 | Loss: 0.3591 | Acc: 0.9151 | LR: 7.83e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  4500/16852 | Loss: 0.3595 | Acc: 0.9148 | LR: 7.70e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  5000/16852 | Loss: 0.3592 | Acc: 0.9148 | LR: 7.57e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  5500/16852 | Loss: 0.3599 | Acc: 0.9139 | LR: 7.44e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  6000/16852 | Loss: 0.3602 | Acc: 0.9136 | LR: 7.31e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  6500/16852 | Loss: 0.3604 | Acc: 0.9135 | LR: 7.17e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  7000/16852 | Loss: 0.3596 | Acc: 0.9140 | LR: 7.04e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  7500/16852 | Loss: 0.3589 | Acc: 0.9144 | LR: 6.91e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  8000/16852 | Loss: 0.3587 | Acc: 0.9147 | LR: 6.78e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  8500/16852 | Loss: 0.3586 | Acc: 0.9148 | LR: 6.65e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  9000/16852 | Loss: 0.3585 | Acc: 0.9151 | LR: 6.52e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step  9500/16852 | Loss: 0.3583 | Acc: 0.9151 | LR: 6.38e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step 10000/16852 | Loss: 0.3587 | Acc: 0.9149 | LR: 6.25e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step 10500/16852 | Loss: 0.3594 | Acc: 0.9145 | LR: 6.12e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step 11000/16852 | Loss: 0.3594 | Acc: 0.9146 | LR: 5.99e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step 11500/16852 | Loss: 0.3595 | Acc: 0.9146 | LR: 5.86e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step 12000/16852 | Loss: 0.3593 | Acc: 0.9148 | LR: 5.72e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step 12500/16852 | Loss: 0.3590 | Acc: 0.9148 | LR: 5.59e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step 13000/16852 | Loss: 0.3587 | Acc: 0.9149 | LR: 5.46e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step 13500/16852 | Loss: 0.3589 | Acc: 0.9152 | LR: 5.33e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step 14000/16852 | Loss: 0.3591 | Acc: 0.9147 | LR: 5.20e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step 14500/16852 | Loss: 0.3586 | Acc: 0.9150 | LR: 5.06e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step 15000/16852 | Loss: 0.3586 | Acc: 0.9149 | LR: 4.93e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step 15500/16852 | Loss: 0.3587 | Acc: 0.9149 | LR: 4.80e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step 16000/16852 | Loss: 0.3586 | Acc: 0.9151 | LR: 4.67e-06
+             GPU: 1.52/4.0 GB
+   Ep 4 | Step 16500/16852 | Loss: 0.3585 | Acc: 0.9151 | LR: 4.54e-06
+             GPU: 1.52/4.0 GB
+
+  Results — Epoch 4:
+    Train Loss        : 0.3584
+    Val Acc           : 0.8805
+    Macro F1          : 0.8696
+    Best threshold    : 0.66 → F1: 0.8724
+    Factual    P/R/F  : 0.905/0.909/0.907
+    Hallucinated P/R/F: 0.835/0.828/0.832
+Writing model shards: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:01<00:00,  1.82s/it]
+
+  ✅ Best model saved — F1: 0.8696 | Threshold: 0.66
+
+============================================================
+  Epoch 5 / 5
+============================================================
+   Ep 5 | Step   500/16852 | Loss: 0.3335 | Acc: 0.9353 | LR: 4.31e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  1000/16852 | Loss: 0.3392 | Acc: 0.9294 | LR: 4.18e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  1500/16852 | Loss: 0.3415 | Acc: 0.9276 | LR: 4.05e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  2000/16852 | Loss: 0.3421 | Acc: 0.9259 | LR: 3.92e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  2500/16852 | Loss: 0.3437 | Acc: 0.9244 | LR: 3.79e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  3000/16852 | Loss: 0.3426 | Acc: 0.9245 | LR: 3.65e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  3500/16852 | Loss: 0.3420 | Acc: 0.9254 | LR: 3.52e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  4000/16852 | Loss: 0.3411 | Acc: 0.9263 | LR: 3.39e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  4500/16852 | Loss: 0.3405 | Acc: 0.9269 | LR: 3.26e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  5000/16852 | Loss: 0.3399 | Acc: 0.9276 | LR: 3.13e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  5500/16852 | Loss: 0.3393 | Acc: 0.9277 | LR: 2.99e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  6000/16852 | Loss: 0.3390 | Acc: 0.9280 | LR: 2.86e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  6500/16852 | Loss: 0.3392 | Acc: 0.9281 | LR: 2.73e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  7000/16852 | Loss: 0.3390 | Acc: 0.9283 | LR: 2.60e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  7500/16852 | Loss: 0.3391 | Acc: 0.9282 | LR: 2.47e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  8000/16852 | Loss: 0.3389 | Acc: 0.9284 | LR: 2.33e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  8500/16852 | Loss: 0.3393 | Acc: 0.9279 | LR: 2.20e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  9000/16852 | Loss: 0.3390 | Acc: 0.9278 | LR: 2.07e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step  9500/16852 | Loss: 0.3389 | Acc: 0.9278 | LR: 1.94e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step 10000/16852 | Loss: 0.3390 | Acc: 0.9279 | LR: 1.81e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step 10500/16852 | Loss: 0.3385 | Acc: 0.9284 | LR: 1.68e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step 11000/16852 | Loss: 0.3385 | Acc: 0.9285 | LR: 1.54e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step 11500/16852 | Loss: 0.3382 | Acc: 0.9288 | LR: 1.41e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step 12000/16852 | Loss: 0.3381 | Acc: 0.9289 | LR: 1.28e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step 12500/16852 | Loss: 0.3380 | Acc: 0.9291 | LR: 1.15e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step 13000/16852 | Loss: 0.3380 | Acc: 0.9291 | LR: 1.02e-06
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step 13500/16852 | Loss: 0.3381 | Acc: 0.9290 | LR: 8.84e-07
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step 14000/16852 | Loss: 0.3377 | Acc: 0.9292 | LR: 7.52e-07
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step 14500/16852 | Loss: 0.3377 | Acc: 0.9291 | LR: 6.20e-07
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step 15000/16852 | Loss: 0.3374 | Acc: 0.9293 | LR: 4.88e-07
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step 15500/16852 | Loss: 0.3376 | Acc: 0.9293 | LR: 3.57e-07
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step 16000/16852 | Loss: 0.3376 | Acc: 0.9293 | LR: 2.25e-07
+             GPU: 1.52/4.0 GB
+   Ep 5 | Step 16500/16852 | Loss: 0.3374 | Acc: 0.9294 | LR: 9.28e-08
+             GPU: 1.52/4.0 GB
+
+  Results — Epoch 5:
+    Train Loss        : 0.3373
+    Val Acc           : 0.8836
+    Macro F1          : 0.8723
+    Best threshold    : 0.58 → F1: 0.8729
+    Factual    P/R/F  : 0.903/0.918/0.910
+    Hallucinated P/R/F: 0.847/0.822/0.834
+Writing model shards: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  1.43it/s]
+
+  ✅ Best model saved — F1: 0.8723 | Threshold: 0.58
+Writing model shards: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  1.43it/s]
+
+============================================================
+  FINAL EVALUATION
+============================================================
+
+  Threshold: 0.58
+              precision    recall  f1-score   support
+
+     Factual       0.89      0.93      0.91     21682
+Hallucinated       0.87      0.80      0.83     12021
+
+    accuracy                           0.89     33703
+   macro avg       0.88      0.87      0.87     33703
+weighted avg       0.88      0.89      0.88     33703
+
+  ROC-AUC: 0.9420
+✅ Results saved
+✅ Plot saved
+
+--- Inference Test (No Evidence Needed) ---
+  ✅ Milky Way galaxy is the name of a planet.
+       → Hallucinated | 83.5%
+
+  ❌ 1 liter is equal to 1200 ml.
+       → Factual | 17.7%
+
+  ✅ 1 km is equal to 1 liter.
+       → Hallucinated | 95.5%
+
+  ❌ Andromeda Galaxy is the galaxy we live in.
+       → Factual | 19.4%
+
+  ✅ Water boils at 100°C at sea level.
+       → Factual | 14.3%
+
+  ✅ Paris is the capital of France.
+       → Factual | 10.5%
+
+  ✅ New York is a continent.
+       → Hallucinated | 97.3%
+
+  ❌ Einstein invented the telephone.
+       → Factual | 11.2%
+
+  ❌ Shakespeare was born in London.
+       → Factual | 12.0%
+
+  ✅ The Nile is the longest river.
+       → Factual | 11.9%
+
+============================================================
+  PHASE 3 COMPLETE | Best F1: 0.8723 | Threshold: 0.58
+============================================================
+⏎                                                             
