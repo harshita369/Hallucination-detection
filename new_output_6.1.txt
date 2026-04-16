@@ -1,0 +1,261 @@
+06_train_corrector.py
+============================================================
+  Phase 6 — Correction Engine
+============================================================
+
+✅ GPU : NVIDIA GeForce RTX 3050 Laptop GPU
+   Device: cuda
+
+--- Loading correction dataset ---
+   Train: 16212 | Val: 1801
+
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+   Tokenizer loaded
+
+   Train batches: 2027 | Val batches: 113
+
+--- Loading Flan-T5-small ---
+Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 190/190 [00:00<00:00, 2302.75it/s]
+The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+   Parameters: 76,961,152
+
+   Epochs: 6 | LR: 5e-05 | Effective batch: 32
+
+============================================================
+  CORRECTION ENGINE TRAINING STARTED
+============================================================
+
+============================================================
+  Epoch 1 / 6
+============================================================
+============================================================
+  Phase 6 — Correction Engine
+============================================================
+
+✅ GPU : NVIDIA GeForce RTX 3050 Laptop GPU
+   Device: cuda
+
+--- Loading correction dataset ---
+   Train: 16212 | Val: 1801
+
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+   Tokenizer loaded
+
+   Train batches: 2027 | Val batches: 113
+
+--- Loading Flan-T5-small ---
+Loading weights: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 190/190 [00:00<00:00, 16094.15it/s]
+The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+   Parameters: 76,961,152
+
+   Epochs: 6 | LR: 5e-05 | Effective batch: 32
+
+`use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+   Ep 1 | Step  100/2027 | Loss: nan | LR: 4.13e-06
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step  200/2027 | Loss: nan | LR: 8.25e-06
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step  300/2027 | Loss: nan | LR: 1.24e-05
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step  400/2027 | Loss: nan | LR: 1.65e-05
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step  500/2027 | Loss: nan | LR: 2.06e-05
+             GPU: 0.40/4.0 GB
+^[   Ep 1 | Step  600/2027 | Loss: nan | LR: 2.48e-05
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step  700/2027 | Loss: nan | LR: 2.89e-05
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step  800/2027 | Loss: nan | LR: 3.30e-05
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step  900/2027 | Loss: nan | LR: 3.71e-05
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step 1000/2027 | Loss: nan | LR: 4.13e-05
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step 1100/2027 | Loss: nan | LR: 4.54e-05
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step 1200/2027 | Loss: nan | LR: 4.95e-05
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step 1300/2027 | Loss: nan | LR: 5.00e-05
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step 1400/2027 | Loss: nan | LR: 5.00e-05
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step 1500/2027 | Loss: nan | LR: 4.99e-05
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step 1600/2027 | Loss: nan | LR: 4.98e-05
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step 1700/2027 | Loss: nan | LR: 4.98e-05
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step 1800/2027 | Loss: nan | LR: 4.96e-05
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step 1900/2027 | Loss: nan | LR: 4.95e-05
+             GPU: 0.40/4.0 GB
+   Ep 1 | Step 2000/2027 | Loss: nan | LR: 4.94e-05
+             GPU: 0.40/4.0 GB
+
+  Epoch 1 Results:
+    Train Loss: nan | Val Loss: nan
+    ROUGE-1: 26.99 | ROUGE-2: 10.64 | ROUGE-L: 19.68
+
+  Sample corrections:
+    Generated : The recruitment crisis in secondary schools has caused half of headteachers to have trouble filling 
+    Reference : School leaders warn the 'bleak' situation is likely to get even worse. Say it is due to rise in pupi
+
+    Generated : Mohammed 'Jihadi John' Emwazi, are known to have been in contact with th
+    Reference : Islamist extremist group Hizb ut-Tahrir 'join al-Qaeda franchise in Syria' Jihadi John came in conta
+
+    Generated : Ethiopian Airlines' reliability came into question when its Boeing 777-300ER experienced multiple te
+    Reference : Plane was flying from Guangzhou, China to Addis Ababa, Ethiopia. Boeing 777-300ER was forced to land
+
+Writing model shards: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  2.58it/s]
+  ✅ Best model saved — ROUGE-L: 19.68
+
+============================================================
+  Epoch 2 / 6
+============================================================
+   Ep 2 | Step  100/2027 | Loss: nan | LR: 4.91e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step  200/2027 | Loss: nan | LR: 4.90e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step  300/2027 | Loss: nan | LR: 4.87e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step  400/2027 | Loss: nan | LR: 4.85e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step  500/2027 | Loss: nan | LR: 4.82e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step  600/2027 | Loss: nan | LR: 4.80e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step  700/2027 | Loss: nan | LR: 4.77e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step  800/2027 | Loss: nan | LR: 4.74e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step  900/2027 | Loss: nan | LR: 4.70e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step 1000/2027 | Loss: nan | LR: 4.67e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step 1100/2027 | Loss: nan | LR: 4.63e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step 1200/2027 | Loss: nan | LR: 4.59e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step 1300/2027 | Loss: nan | LR: 4.55e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step 1400/2027 | Loss: nan | LR: 4.51e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step 1500/2027 | Loss: nan | LR: 4.47e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step 1600/2027 | Loss: nan | LR: 4.42e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step 1700/2027 | Loss: nan | LR: 4.38e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step 1800/2027 | Loss: nan | LR: 4.33e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step 1900/2027 | Loss: nan | LR: 4.28e-05
+             GPU: 0.40/4.0 GB
+   Ep 2 | Step 2000/2027 | Loss: nan | LR: 4.23e-05
+             GPU: 0.40/4.0 GB
+
+  Epoch 2 Results:
+    Train Loss: nan | Val Loss: nan
+    ROUGE-1: 26.99 | ROUGE-2: 10.64 | ROUGE-L: 19.68
+
+  Sample corrections:
+    Generated : The recruitment crisis in secondary schools has caused half of headteachers to have trouble filling 
+    Reference : School leaders warn the 'bleak' situation is likely to get even worse. Say it is due to rise in pupi
+
+    Generated : Mohammed 'Jihadi John' Emwazi, are known to have been in contact with th
+    Reference : Islamist extremist group Hizb ut-Tahrir 'join al-Qaeda franchise in Syria' Jihadi John came in conta
+
+    Generated : Ethiopian Airlines' reliability came into question when its Boeing 777-300ER experienced multiple te
+    Reference : Plane was flying from Guangzhou, China to Addis Ababa, Ethiopia. Boeing 777-300ER was forced to land
+
+  ⚠ No improvement (1/2)
+
+============================================================
+  Epoch 3 / 6
+============================================================
+   Ep 3 | Step  100/2027 | Loss: nan | LR: 4.16e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step  200/2027 | Loss: nan | LR: 4.11e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step  300/2027 | Loss: nan | LR: 4.05e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step  400/2027 | Loss: nan | LR: 3.99e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step  500/2027 | Loss: nan | LR: 3.94e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step  600/2027 | Loss: nan | LR: 3.88e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step  700/2027 | Loss: nan | LR: 3.82e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step  800/2027 | Loss: nan | LR: 3.75e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step  900/2027 | Loss: nan | LR: 3.69e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step 1000/2027 | Loss: nan | LR: 3.63e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step 1100/2027 | Loss: nan | LR: 3.56e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step 1200/2027 | Loss: nan | LR: 3.50e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step 1300/2027 | Loss: nan | LR: 3.43e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step 1400/2027 | Loss: nan | LR: 3.37e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step 1500/2027 | Loss: nan | LR: 3.30e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step 1600/2027 | Loss: nan | LR: 3.23e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step 1700/2027 | Loss: nan | LR: 3.16e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step 1800/2027 | Loss: nan | LR: 3.09e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step 1900/2027 | Loss: nan | LR: 3.02e-05
+             GPU: 0.40/4.0 GB
+   Ep 3 | Step 2000/2027 | Loss: nan | LR: 2.95e-05
+             GPU: 0.40/4.0 GB
+
+  Epoch 3 Results:
+    Train Loss: nan | Val Loss: nan
+    ROUGE-1: 26.99 | ROUGE-2: 10.64 | ROUGE-L: 19.68
+
+  Sample corrections:
+    Generated : The recruitment crisis in secondary schools has caused half of headteachers to have trouble filling 
+    Reference : School leaders warn the 'bleak' situation is likely to get even worse. Say it is due to rise in pupi
+
+    Generated : Mohammed 'Jihadi John' Emwazi, are known to have been in contact with th
+    Reference : Islamist extremist group Hizb ut-Tahrir 'join al-Qaeda franchise in Syria' Jihadi John came in conta
+
+    Generated : Ethiopian Airlines' reliability came into question when its Boeing 777-300ER experienced multiple te
+    Reference : Plane was flying from Guangzhou, China to Addis Ababa, Ethiopia. Boeing 777-300ER was forced to land
+
+  ⚠ No improvement (2/2)
+  🛑 Early stopping
+Writing model shards: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  2.67it/s]
+
+✅ Final model saved: ./corrector_model/final
+✅ Plot saved
+
+--- Testing Correction Engine ---
+
+  1. ❌ Albert Einstein invented the telephone.
+     ✅ Alexander Graham Bell is credited with inventing the telephone in 1876.
+     📖 Alexander Graham Bell is credited with inventing the telephone in 1876....
+
+  2. ❌ The Amazon is the longest river in the world.
+     ✅ The Nile is the longest river in the world. The Amazon is the largest by water flow.
+     📖 The Nile is the longest river at 6,650 km. The Amazon is the largest by water fl...
+
+  3. ❌ Shakespeare was born in London.
+     ✅ William Shakespeare was born in Stratford-upon-Avon, England in 1564.
+     📖 William Shakespeare was born in Stratford-upon-Avon, England in 1564....
+
+  4. ❌ Water boils at 50 degrees Celsius at sea level.
+     ✅ Water boils at 100 degrees Fahrenheit at standard atmospheric pressure.
+     📖 Water boils at 100 degrees Celsius at standard atmospheric pressure....
+
+  5. ❌ The Great Wall of China is visible from space.
+     ✅ The Great Wall of China is not visible from space with the naked eye.
+     📖 The Great Wall of China is NOT visible from space with the naked eye....
+
+============================================================
+  PHASE 6 COMPLETE | Best ROUGE-L: 19.68
+============================================================

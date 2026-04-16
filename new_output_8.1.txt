@@ -1,0 +1,175 @@
+predict.py 
+Loading models...
+Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 201/201 [00:00<00:00, 1134.02it/s]
+Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 201/201 [00:00<00:00, 1173.90it/s]
+Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 190/190 [00:00<00:00, 1755.50it/s]
+The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+============================================================
+  Phase 5 — Wikipedia Retrieval System
+============================================================
+
+✅ Wikipedia API initialized
+--- Loading sentence embedding model ---
+   Model: all-MiniLM-L6-v2
+   (downloads ~80MB on first run, cached after)
+
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 103/103 [00:00<00:00, 3683.76it/s]
+BertModel LOAD REPORT from: sentence-transformers/all-MiniLM-L6-v2
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+✅ Embedding model loaded
+
+✅ Cache loaded — 26 entries cached
+
+✅ Models loaded | Device: cuda | Threshold: 0.58
+   Wikipedia: enabled
+
+==========================================================
+  Hallucination Detector — Full Pipeline
+  Detection works WITHOUT Wikipedia evidence.
+  Wikipedia is used for NLI & correction only.
+  Type 'quit' to exit.
+==========================================================
+
+> boiling point of water is 50 degree celcius
+
+  ────────────────────────────────────────────────────────
+  ⚠  HALLUCINATED
+  ────────────────────────────────────────────────────────
+  Statement  : boiling point of water is 50 degree celcius
+  Detection  : 63.18% hallucination (threshold: 0.58)
+  NLI        : Contradiction | Entailment: 0.87% | Contradiction: 95.75%
+  Weighted   : 76.21% | Confidence: HIGH
+  Evidence   : [boiling point] Because of this, water boils at 100°C (or with scientific precision: 99.97 °C (211.95 °F)) under standard pressure at se...
+
+  ✏ Corrected: The boiling point corresponds to the temperature at which the vapor pressure of the liquid equals the surrounding environmental pressure. Thus, the boiling point is dependent on the pressure.
+
+
+> 1 liter is equal to 1200 ml
+
+  ────────────────────────────────────────────────────────
+  ⚠  HALLUCINATED
+  ────────────────────────────────────────────────────────
+  Statement  : 1 liter is equal to 1200 ml
+  Detection  : 16.79% hallucination (threshold: 0.58)
+  NLI        : Contradiction | Entailment: 4.9% | Contradiction: 82.56%
+  Weighted   : 43.1% | Confidence: MEDIUM
+  Evidence   : [1 liter] It follows, therefore, that ⁠1/1000⁠ of a litre, known as one millilitre (1 mL), of water has a mass of about 1 g, while...
+
+  ✏ Corrected: A litre is equal in volume to the millistere, an obsolete non-SI metric unit formerly customarily used for dry measure.
+
+
+> a standard car has 5 wheels
+
+  ────────────────────────────────────────────────────────
+  ✅ FACTUAL
+  ────────────────────────────────────────────────────────
+  Statement  : a standard car has 5 wheels
+  Detection  : 15.33% hallucination (threshold: 0.58)
+  Weighted   : 15.33% | Confidence: LOW
+
+
+> humans have 7 fingers in each hand
+
+  ────────────────────────────────────────────────────────
+  ✅ FACTUAL
+  ────────────────────────────────────────────────────────
+  Statement  : humans have 7 fingers in each hand
+  Detection  : 33.26% hallucination (threshold: 0.58)
+  Weighted   : 33.26% | Confidence: LOW
+
+
+> 1 kg is 400 ml
+
+  ────────────────────────────────────────────────────────
+  ⚠  HALLUCINATED
+  ────────────────────────────────────────────────────────
+  Statement  : 1 kg is 400 ml
+  Detection  : 11.47% hallucination (threshold: 0.58)
+  NLI        : Contradiction | Entailment: 2.31% | Contradiction: 79.24%
+  Weighted   : 38.58% | Confidence: MEDIUM
+  Evidence   : [1 kg] However, the names of all SI mass units are based on gram, rather than on kilogram; thus 103 kg is a megagram (106 g), n...
+
+  ✏ Corrected: 103 kg is a megagram (106 g), not a *kilokilogram. The kilogram is the only standard unit to include an SI prefix (kilo-) as part of its name
+
+
+> new zeland is the biggest country in the world
+
+  ────────────────────────────────────────────────────────
+  ⚠  HALLUCINATED
+  ────────────────────────────────────────────────────────
+  Statement  : new zeland is the biggest country in the world
+  Detection  : 67.96% hallucination (threshold: 0.58)
+  NLI        : Neutral | Entailment: 1.95% | Contradiction: 1.08%
+  Weighted   : 41.21% | Confidence: MEDIUM
+  Evidence   : [new zeland] It is the sixth-largest island country by area and lies east of Australia across the Tasman Sea and south of the islands...
+
+  ✏ Corrected: New Zealand is the sixth-largest island country by area and lies east of Australia across the Tasman Sea and south of the islands of New Caledonia, Fiji, and Tonga.
+
+
+> dominos is a sushi restraunt
+
+  ────────────────────────────────────────────────────────
+  ⚠  HALLUCINATED
+  ────────────────────────────────────────────────────────
+  Statement  : dominos is a sushi restraunt
+  Detection  : 96.0% hallucination (threshold: 0.58)
+  Weighted   : 96.0% | Confidence: HIGH
+
+  ✏ Corrected: Dominos is a sushi restraunt in the United States.
+
+
+> domino's is a pizza restraunt
+
+  ────────────────────────────────────────────────────────
+  ⚠  HALLUCINATED
+  ────────────────────────────────────────────────────────
+  Statement  : domino's is a pizza restraunt
+  Detection  : 36.62% hallucination (threshold: 0.58)
+  Weighted   : 36.62% | Confidence: MEDIUM
+
+  ✏ Corrected: Domino's is a pizza restraunt in Las Vegas.
+
+
+> McDonalds is a chinese restraunt
+
+  ────────────────────────────────────────────────────────
+  ⚠  HALLUCINATED
+  ────────────────────────────────────────────────────────
+  Statement  : McDonalds is a chinese restraunt
+  Detection  : 97.04% hallucination (threshold: 0.58)
+  Weighted   : 97.04% | Confidence: HIGH
+
+  ✏ Corrected: McDonalds is a chinese restraunt.
+
+
+> psychology is the study of fishes
+
+  ────────────────────────────────────────────────────────
+  ⚠  HALLUCINATED
+  ────────────────────────────────────────────────────────
+  Statement  : psychology is the study of fishes
+  Detection  : 95.88% hallucination (threshold: 0.58)
+  Weighted   : 95.88% | Confidence: HIGH
+
+  ✏ Corrected: Psychology is the study of fishes, which is a type of psychiatry.
+
+
+> exit means to keep going
+
+  ────────────────────────────────────────────────────────
+  ✅ FACTUAL
+  ────────────────────────────────────────────────────────
+  Statement  : exit means to keep going
+  Detection  : 10.2% hallucination (threshold: 0.58)
+  Weighted   : 10.2% | Confidence: LOW
+
+
+> exit
+Exiting.
+

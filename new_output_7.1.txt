@@ -1,0 +1,221 @@
+07_evaluate.py
+============================================================
+  Phase 5 — Wikipedia Retrieval System
+============================================================
+
+✅ Wikipedia API initialized
+--- Loading sentence embedding model ---
+   Model: all-MiniLM-L6-v2
+   (downloads ~80MB on first run, cached after)
+
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 103/103 [00:00<00:00, 3672.90it/s]
+BertModel LOAD REPORT from: sentence-transformers/all-MiniLM-L6-v2
+Key                     | Status     | Details
+------------------------+------------+--------
+embeddings.position_ids | UNEXPECTED |        
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+✅ Embedding model loaded
+
+✅ Cache loaded — 9 entries cached
+
+✅ Retriever loaded
+============================================================
+  Phase 7 — Full Pipeline Evaluation
+============================================================
+
+✅ GPU: NVIDIA GeForce RTX 3050 Laptop GPU
+   Device: cuda
+
+--- Loading models ---
+Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 201/201 [00:00<00:00, 1238.32it/s]
+   ✅ Detection model
+Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 201/201 [00:00<00:00, 1105.49it/s]
+   ✅ NLI model
+Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 190/190 [00:00<00:00, 1783.76it/s]
+The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+   ✅ Correction model
+   ✅ Threshold loaded: 0.58
+
+============================================================
+  PART 1: Detection Model Evaluation
+============================================================
+
+   Test samples: 33703 | Threshold: 0.58
+
+   Processed 800/33703...
+   Processed 1600/33703...
+   Processed 2400/33703...
+   Processed 3200/33703...
+   Processed 4000/33703...
+   Processed 4800/33703...
+   Processed 5600/33703...
+   Processed 6400/33703...
+   Processed 7200/33703...
+   Processed 8000/33703...
+   Processed 8800/33703...
+   Processed 9600/33703...
+   Processed 10400/33703...
+   Processed 11200/33703...
+   Processed 12000/33703...
+   Processed 12800/33703...
+   Processed 13600/33703...
+   Processed 14400/33703...
+   Processed 15200/33703...
+   Processed 16000/33703...
+   Processed 16800/33703...
+   Processed 17600/33703...
+   Processed 18400/33703...
+   Processed 19200/33703...
+   Processed 20000/33703...
+   Processed 20800/33703...
+   Processed 21600/33703...
+   Processed 22400/33703...
+   Processed 23200/33703...
+   Processed 24000/33703...
+   Processed 24800/33703...
+   Processed 25600/33703...
+   Processed 26400/33703...
+   Processed 27200/33703...
+   Processed 28000/33703...
+   Processed 28800/33703...
+   Processed 29600/33703...
+   Processed 30400/33703...
+   Processed 31200/33703...
+   Processed 32000/33703...
+   Processed 32800/33703...
+   Processed 33600/33703...
+
+   Accuracy  : 0.8853 (88.53%)
+   Precision : 0.8805
+   Recall    : 0.8668
+   Macro F1  : 0.8729
+   ROC-AUC   : 0.9420
+
+              precision    recall  f1-score   support
+
+     Factual       0.89      0.93      0.91     21682
+Hallucinated       0.87      0.80      0.83     12021
+
+    accuracy                           0.89     33703
+   macro avg       0.88      0.87      0.87     33703
+weighted avg       0.88      0.89      0.88     33703
+
+   Per-source accuracy:
+     HaluEval_Summarization             : 0.975
+     FEVER_train                        : 0.875
+     GeneralHallucination               : 0.912
+     HaluEval_QA                        : 0.896
+     FEVER_dev                          : 0.813
+
+============================================================
+  PART 2: TruthfulQA Benchmark
+============================================================
+
+   Samples   : 790
+   Categories: 37
+   Wikipedia : enabled
+
+   Processed 50/790...
+   Processed 100/790...
+   Processed 150/790...
+   Processed 200/790...
+   Processed 250/790...
+   Processed 300/790...
+   Processed 350/790...
+   Processed 400/790...
+   Processed 450/790...
+   Processed 500/790...
+   Processed 550/790...
+   Processed 600/790...
+   Processed 650/790...
+   Processed 700/790...
+   Processed 750/790...
+^[[C^[[C
+   TruthfulQA Strict Accuracy  : 0.1519 (15.19%)
+   TruthfulQA Partial Accuracy : 0.8025 (80.25%)
+   Evidence retrieved          : 28/790
+
+   Per-category (top 10):
+     Statistics                         : 0.40
+     Misinformation                     : 0.33
+     Psychology                         : 0.32
+     Language                           : 0.24
+     Myths and Fairytales               : 0.24
+     Sociology                          : 0.24
+     Fiction                            : 0.23
+     Proverbs                           : 0.22
+     Science                            : 0.22
+     Subjective                         : 0.22
+
+============================================================
+  PART 3: Correction ROUGE Scores
+============================================================
+
+   ROUGE-1: 41.21
+
+   ROUGE-2: 28.67
+
+   ROUGE-L: 39.3
+
+   (Score > 30 is good for correction tasks)
+
+✅ Reports saved
+✅ Plots saved
+
+============================================================
+  PART 4: Full Pipeline Demo
+============================================================
+
+  ──────────────────────────────────────────────────────
+  1. ⚠ HALLUCINATED (weighted: 71.97%)
+  Statement : Albert Einstein invented the telephone in 1876.
+  Detection : 53.38%
+  NLI       : Contradiction (99.85% contradiction)
+  Confidence: HIGH
+  Corrected : Alexander Graham Bell patented the telephone in 1876. Incorrect statement: Albert Einstein invented the telephone.
+
+  ──────────────────────────────────────────────────────
+  2. ⚠ HALLUCINATED (weighted: 48.44%)
+  Statement : The Eiffel Tower is in Berlin, Germany.
+  Detection : 14.16%
+  NLI       : Contradiction (99.86% contradiction)
+  Confidence: MEDIUM
+  Corrected : The Eiffel Tower is on the Champ de Mars in Paris, France.
+
+  ──────────────────────────────────────────────────────
+  3. ✅ FACTUAL (weighted: 27.01%)
+  Statement : Water boils at 100 degrees Celsius at sea level.
+  Detection : 11.97%
+  NLI       : Contradiction (49.57% contradiction)
+  Confidence: LOW
+
+  ──────────────────────────────────────────────────────
+  4. ⚠ HALLUCINATED (weighted: 49.94%)
+  Statement : The Amazon is the longest river in the world.
+  Detection : 82.62%
+  NLI       : Neutral (0.93% contradiction)
+  Confidence: MEDIUM
+  Corrected : The Nile at 6,650 km is the longest river in the world.
+
+  ──────────────────────────────────────────────────────
+  5. ⚠ HALLUCINATED (weighted: 47.08%)
+  Statement : Shakespeare was born in London.
+  Detection : 11.98%
+  NLI       : Contradiction (99.73% contradiction)
+  Confidence: MEDIUM
+  Corrected : Shakespeare was born in Stratford-upon-Avon in April 1564.
+
+============================================================
+  EVALUATION COMPLETE
+============================================================
+
+  Detection: Acc=88.53% | F1=0.8729 | AUC=0.9420
+  TruthfulQA: Strict=15.19% | Partial=80.25%
+  Correction: ROUGE-L=39.3
+
+  Output: /home/animesh/projects/Hallucination-detection/evaluation_results/
+============================================================
+⏎    

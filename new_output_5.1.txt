@@ -1,0 +1,138 @@
+05_retriever.py
+============================================================
+  Phase 5 — Wikipedia Retrieval System
+============================================================
+
+✅ Wikipedia API initialized
+--- Loading sentence embedding model ---
+   Model: all-MiniLM-L6-v2
+   (downloads ~80MB on first run, cached after)
+
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 103/103 [00:00<00:00, 3120.04it/s]
+BertModel LOAD REPORT from: sentence-transformers/all-MiniLM-L6-v2
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+✅ Embedding model loaded
+
+✅ Cache loaded — 8 entries cached
+
+
+============================================================
+  Testing Wikipedia Retrieval System
+============================================================
+
+Testing 6 claims...
+
+
+────────────────────────────────────────────────────────────
+Claim 1: The Eiffel Tower is located in Paris, France.
+
+   Searching Wikipedia for: 'The Eiffel Tower is located in Paris, France....'
+   Trying: 'The Eiffel Tower'
+   ✅ Found evidence from: 'The Eiffel Tower'
+   Evidence preview: The Eiffel Tower ( EYE-fəl; French: Tour Eiffel [tuʁ ɛfɛl] ) is a lattice tower on the Champ de Mars in Paris, France. Excluding transmitters, the Eif...
+
+  Source    : The Eiffel Tower
+  Evidence  :
+    1. The Eiffel Tower ( EYE-fəl; French: Tour Eiffel [tuʁ ɛfɛl] ) is a lattice tower on the Champ de Mars in Paris, France....
+    2. Excluding transmitters, the Eiffel Tower is the second tallest free-standing structure in France after the Millau Viaduc...
+    3. It is named after the engineer Gustave Eiffel, whose company designed and built the tower from 1887 to 1889....
+
+────────────────────────────────────────────────────────────
+Claim 2: Albert Einstein won the Nobel Prize in Physics.
+
+   Searching Wikipedia for: 'Albert Einstein won the Nobel Prize in Physics....'
+   Trying: 'Albert Einstein won'
+   Trying: 'Albert Einstein'
+   ✅ Found evidence from: 'Albert Einstein'
+   Evidence preview: Einstein also made important contributions to quantum theory. Albert Einstein (14 March 1879 – 18 April 1955) was a German-born theoretical physicist ...
+
+  Source    : Albert Einstein
+  Evidence  :
+    1. Einstein also made important contributions to quantum theory....
+    2. Albert Einstein (14 March 1879 – 18 April 1955) was a German-born theoretical physicist best known for developing the th...
+    3. In the middle part of his career, Einstein made important contributions to statistical mechanics and quantum theory....
+
+────────────────────────────────────────────────────────────
+Claim 3: The Amazon River is the longest river in the world.
+
+   Searching Wikipedia for: 'The Amazon River is the longest river in the world....'
+   Trying: 'The Amazon River'
+   ✅ Found evidence from: 'The Amazon River'
+   Evidence preview: The Amazon River (UK: , US: ; Portuguese: rio Amazonas, Spanish: río Amazonas) in South America is the largest river by discharge volume of water in t...
+
+  Source    : The Amazon River
+  Evidence  :
+    1. The Amazon River (UK: , US: ; Portuguese: rio Amazonas, Spanish: río Amazonas) in South America is the largest river by ...
+    2. Two of the top ten rivers by discharge are tributaries of the Amazon river....
+    3. The Amazon River has an average discharge of about 215,000–230,000 cubic meters per second (7,600,000–8,100,000 cu ft/s)...
+
+────────────────────────────────────────────────────────────
+Claim 4: Shakespeare was born in Stratford-upon-Avon.
+
+   Searching Wikipedia for: 'Shakespeare was born in Stratford-upon-Avon....'
+   Trying: 'Shakespeare was born'
+   Trying: 'Shakespeare was'
+   ⚠ No evidence found
+  No evidence found for this claim
+
+────────────────────────────────────────────────────────────
+Claim 5: The Great Wall of China is visible from space.
+
+   Searching Wikipedia for: 'The Great Wall of China is visible from space....'
+   Trying: 'The Great Wall'
+   ✅ Found evidence from: 'The Great Wall'
+   Evidence preview: The Great Wall of China (traditional Chinese: 萬里長城; simplified Chinese: 万里长城; pinyin: Wànlǐ Chángchéng, literally "ten thousand li long wall") is a se...
+
+  Source    : The Great Wall
+  Evidence  :
+    1. The Great Wall of China (traditional Chinese: 萬里長城; simplified Chinese: 万里长城; pinyin: Wànlǐ Chángchéng, literally "ten t...
+    2. By the nineteenth century, "the Great Wall of China" had become standard in English and French, although other European ...
+    3. Names The collection of fortifications known as the Great Wall of China has historically had a number of different names...
+
+────────────────────────────────────────────────────────────
+Claim 6: Water boils at 100 degrees Celsius at sea level.
+
+   Searching Wikipedia for: 'Water boils at 100 degrees Celsius at sea level....'
+   Trying: 'Water boils at'
+   Trying: 'Water boils'
+   ⚠ No evidence found
+  No evidence found for this claim
+
+============================================================
+  Retrieval Test Complete
+  Cache saved to: /home/animesh/projects/Hallucination-detection/retriever_cache.json
+============================================================
+
+
+--- Interactive Demo ---
+Enter a statement to find Wikipedia evidence
+(Press Ctrl+C to exit)
+
+Statement: water boils at 50 degree celcius
+
+   Searching Wikipedia for: 'water boils at 50 degree celcius...'
+   Trying: 'water boils at'
+   Trying: 'water boils'
+   ⚠ No evidence found
+
+⚠ No Wikipedia evidence found for this statement
+
+Statement: statue of liberty is in new york
+
+   Searching Wikipedia for: 'statue of liberty is in new york...'
+   Trying: 'statue of liberty'
+   ✅ Found evidence from: 'statue of liberty'
+   Evidence preview: The Statue of Liberty (Liberty Enlightening the World; French: La Liberté éclairant le monde) is a colossal neoclassical sculpture of a robed and crow...
+
+✅ Evidence from Wikipedia (statue of liberty):
+   The Statue of Liberty (Liberty Enlightening the World; French: La Liberté éclairant le monde) is a colossal neoclassical sculpture of a robed and crowned woman on Liberty Island in New York Harbor, within New York City, U.S. The statue was administered by the United States Lighthouse Board until 1901 and then by the Department of War; since 1933, it has been maintained by the National Park Service...
+
+Statement: ^C
+
+Exiting...
