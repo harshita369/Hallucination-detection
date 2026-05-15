@@ -4,3 +4,5 @@ venv/
 venv*
 *.safetensors
 *.json
+__pycache__/
+*.pyc
