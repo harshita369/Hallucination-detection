@@ -1,11 +1,8 @@
-CORRECTION ENGINE — RESULTS
+CORRECTION ENGINE RESULTS
 ==================================================
 
 Model        : google/flan-t5-small
-LR           : 5e-05
-Train Size   : 16212
-Best ROUGE-L : 19.68
-
-ROUGE-1: 26.99
-ROUGE-2: 10.64
-ROUGE-L: 19.68
+Device       : CPU
+LR           : 3e-05
+Train size   : 9000
+Best ROUGE-L : 0.00

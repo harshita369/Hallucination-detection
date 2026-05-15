@@ -1,69 +1,68 @@
-HALLUCINATION DETECTION — IMPROVED EVALUATION
+============================================================
+  HALLUCINATION DETECTION ENGINE — FULL EVALUATION REPORT
 ============================================================
 
-Threshold : 0.58
-
-DETECTION MODEL
+DETECTION MODEL (Phase 3 — RoBERTa)
 ----------------------------------------
-Accuracy  : 0.8853 (88.53%)
-Macro F1  : 0.8729
-ROC-AUC   : 0.9420
+Test Samples : 33703
+Accuracy     : 0.8845 (88.45%)
+Precision    : 0.8813
+Recall       : 0.8639
+Macro F1     : 0.8714
+ROC-AUC      : 0.9454
 
+Classification Report:
               precision    recall  f1-score   support
 
-     Factual       0.89      0.93      0.91     21682
-Hallucinated       0.87      0.80      0.83     12021
+     Factual       0.89      0.94      0.91     21682
+Hallucinated       0.87      0.79      0.83     12021
 
-    accuracy                           0.89     33703
-   macro avg       0.88      0.87      0.87     33703
-weighted avg       0.88      0.89      0.88     33703
+    accuracy                           0.88     33703
+   macro avg       0.88      0.86      0.87     33703
+weighted avg       0.88      0.88      0.88     33703
 
 
-TRUTHFULQA
+TRUTHFULQA BENCHMARK (Full Pipeline)
 ----------------------------------------
-Strict Accuracy : 0.1519
-Partial Accuracy: 0.8025
+Samples Evaluated : 200
+Pipeline Accuracy : 0.1100 (11.00%)
 
-  Statistics                         : 0.40
-  Misinformation                     : 0.33
-  Psychology                         : 0.32
-  Language                           : 0.24
-  Myths and Fairytales               : 0.24
-  Sociology                          : 0.24
-  Fiction                            : 0.23
-  Proverbs                           : 0.22
-  Science                            : 0.22
-  Subjective                         : 0.22
-  Law                                : 0.20
-  Politics                           : 0.20
-  Conspiracies                       : 0.19
-  Weather                            : 0.18
-  Misconceptions                     : 0.17
-  Mandela Effect                     : 0.17
-  History                            : 0.17
-  Stereotypes                        : 0.17
-  Religion                           : 0.14
-  Economics                          : 0.13
-  Nutrition                          : 0.12
-  Paranormal                         : 0.12
-  Finance                            : 0.11
-  Indexical Error: Other             : 0.11
-  Health                             : 0.09
-  Superstitions                      : 0.09
-  Advertising                        : 0.08
-  Distraction                        : 0.07
+Per-Category Accuracy:
+  Mandela Effect                     : 1.00
+  Psychology                         : 0.43
+  Politics                           : 0.33
+  Conspiracies                       : 0.33
+  History                            : 0.29
+  Health                             : 0.29
+  Proverbs                           : 0.25
+  Stereotypes                        : 0.25
+  Confusion: Places                  : 0.20
+  Nutrition                          : 0.20
+  Misconceptions                     : 0.14
+  Economics                          : 0.08
+  Sociology                          : 0.07
   Confusion: Other                   : 0.00
-  Confusion: Places                  : 0.00
   Confusion: People                  : 0.00
-  Misconceptions: Topical            : 0.00
+  Advertising                        : 0.00
+  Finance                            : 0.00
   Indexical Error: Identity          : 0.00
   Education                          : 0.00
+  Fiction                            : 0.00
+  Distraction                        : 0.00
+  Misconceptions: Topical            : 0.00
   Logical Falsehood                  : 0.00
+  Language                           : 0.00
+  Law                                : 0.00
+  Indexical Error: Other             : 0.00
   Indexical Error: Location          : 0.00
+  Myths and Fairytales               : 0.00
   Misquotations                      : 0.00
+  Paranormal                         : 0.00
+  Misinformation                     : 0.00
+  Science                            : 0.00
+  Religion                           : 0.00
+  Statistics                         : 0.00
+  Subjective                         : 0.00
+  Superstitions                      : 0.00
+  Weather                            : 0.00
 
-ROUGE
-----------------------------------------
-  ROUGE-1: 41.21
-  ROUGE-2: 28.67
-  ROUGE-L: 39.3

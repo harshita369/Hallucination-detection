@@ -1,0 +1,363 @@
+6_train_corrector.py
+⚠ Install evaluate library: pip install evaluate rouge-score
+============================================================
+  Phase 5 — Wikipedia Retrieval System
+============================================================
+
+✅ Wikipedia API initialized
+--- Loading sentence embedding model ---
+   Model: all-MiniLM-L6-v2
+   (downloads ~80MB on first run, cached after)
+
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 103/103 [00:00<00:00, 13556.34it/s]
+BertModel LOAD REPORT from: sentence-transformers/all-MiniLM-L6-v2
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+✅ Embedding model loaded
+
+✅ Cache loaded — 31 entries cached
+
+============================================================
+  Phase 7 — Full Pipeline Evaluation
+============================================================
+
+✅ GPU: NVIDIA GeForce RTX 3050 Laptop GPU
+   Device: cuda
+
+--- Loading all trained models ---
+   Loading detection model...
+Loading weights: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 201/201 [00:00<00:00, 13391.18it/s]
+   ✅ Detection model loaded
+   Loading NLI model...
+Loading weights: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 201/201 [00:00<00:00, 16193.29it/s]
+   ✅ NLI model loaded
+   Loading correction model...
+Loading weights: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 190/190 [00:00<00:00, 14649.22it/s]
+The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+   ✅ Correction model loaded
+
+============================================================
+  PART 1: Detection Model Evaluation
+============================================================
+
+   Test samples: 33703
+   Running inference on test set...
+   Processed 800/33703...
+   Processed 1600/33703...
+   Processed 2400/33703...
+   Processed 3200/33703...
+   Processed 4000/33703...
+   Processed 4800/33703...
+   Processed 5600/33703...
+   Processed 6400/33703...
+   Processed 7200/33703...
+   Processed 8000/33703...
+   Processed 8800/33703...
+   Processed 9600/33703...
+   Processed 10400/33703...
+   Processed 11200/33703...
+   Processed 12000/33703...
+   Processed 12800/33703...
+   Processed 13600/33703...
+   Processed 14400/33703...
+   Processed 15200/33703...
+   Processed 16000/33703...
+   Processed 16800/33703...
+   Processed 17600/33703...
+   Processed 18400/33703...
+   Processed 19200/33703...
+   Processed 20000/33703...
+   Processed 20800/33703...
+   Processed 21600/33703...
+   Processed 22400/33703...
+   Processed 23200/33703...
+   Processed 24000/33703...
+   Processed 24800/33703...
+   Processed 25600/33703...
+   Processed 26400/33703...
+   Processed 27200/33703...
+   Processed 28000/33703...
+   Processed 28800/33703...
+   Processed 29600/33703...
+   Processed 30400/33703...
+   Processed 31200/33703...
+   Processed 32000/33703...
+   Processed 32800/33703...
+   Processed 33600/33703...
+
+   Detection Model Results:
+     Accuracy  : 0.8845 (88.45%)
+     Precision : 0.8813
+     Recall    : 0.8639
+     Macro F1  : 0.8714
+
+              precision    recall  f1-score   support
+
+     Factual       0.89      0.94      0.91     21682
+Hallucinated       0.87      0.79      0.83     12021
+
+    accuracy                           0.88     33703
+   macro avg       0.88      0.86      0.87     33703
+weighted avg       0.88      0.88      0.88     33703
+
+   ROC-AUC: 0.9454
+
+============================================================
+  PART 2: TruthfulQA Benchmark Evaluation
+============================================================
+
+   Benchmark samples : 200
+   Categories        : 37
+   Running full pipeline on benchmark...
+
+   Processed 20/200...
+   Processed 40/200...
+   Processed 60/200...
+   Processed 80/200...
+   Processed 100/200...
+   Processed 120/200...
+   Processed 140/200...
+   Processed 160/200...
+   Processed 180/200...
+   Processed 200/200...
+
+   TruthfulQA Benchmark Accuracy: 0.1100 (11.00%)
+   Correct predictions: 22/200
+
+   Per-category accuracy:
+     Mandela Effect                     : 1.00
+     Psychology                         : 0.43
+     Politics                           : 0.33
+     Conspiracies                       : 0.33
+     History                            : 0.29
+     Health                             : 0.29
+     Proverbs                           : 0.25
+     Stereotypes                        : 0.25
+     Confusion: Places                  : 0.20
+     Nutrition                          : 0.20
+
+============================================================
+  PART 3: Correction Engine ROUGE Evaluation
+============================================================
+   ROUGE scoring skipped (evaluate library not available)
+
+============================================================
+  Saving Results
+============================================================
+
+✅ Pipeline results saved: ./evaluation_results/pipeline_results.csv
+✅ Full report saved: ./evaluation_results/full_report.txt
+
+--- Generating evaluation plots ---
+✅ Evaluation plots saved: ./evaluation_results/full_evaluation.png
+
+============================================================
+  PART 4: Full Pipeline Demo
+============================================================
+
+  ────────────────────────────────────────────────────────
+  Example 1: ⚠ HALLUCINATED
+  Statement  : Albert Einstein invented the telephone in 1876.
+  Detection  : 99.91% hallucination probability
+  NLI Result : Contradiction (Contradiction: 99.84%)
+  Confidence : HIGH
+  Corrected  : no
+
+  ────────────────────────────────────────────────────────
+  Example 2: ⚠ HALLUCINATED
+  Statement  : The Eiffel Tower is located in Berlin, Germany.
+  Detection  : 99.91% hallucination probability
+  NLI Result : Contradiction (Contradiction: 99.87%)
+  Confidence : HIGH
+  Corrected  : no
+
+  ────────────────────────────────────────────────────────
+  Example 3: ✅ FACTUAL
+  Statement  : Water boils at 100 degrees Celsius at sea level.
+  Detection  : 21.47% hallucination probability
+  NLI Result : Neutral (Contradiction: 39.37%)
+  Confidence : LOW
+
+  ────────────────────────────────────────────────────────
+  Example 4: ⚠ HALLUCINATED
+  Statement  : The Amazon is the longest river in the world.
+  Detection  : 99.91% hallucination probability
+  NLI Result : Neutral (Contradiction: 1.55%)
+  Confidence : MEDIUM
+  Corrected  : no
+
+  ────────────────────────────────────────────────────────
+  Example 5: ⚠ HALLUCINATED
+  Statement  : Shakespeare was born in London.
+  Detection  : 99.91% hallucination probability
+  NLI Result : Contradiction (Contradiction: 99.88%)
+  Confidence : HIGH
+  Corrected  : no
+
+============================================================
+  EVALUATION COMPLETE — SUMMARY
+============================================================
+
+  Detection Model (RoBERTa):
+    Accuracy  : 88.45%
+    Macro F1  : 0.8714
+    ROC-AUC   : 0.9454
+
+  Full Pipeline (TruthfulQA Benchmark):
+    Accuracy  : 11.00%
+
+  Output files saved to: /home/animesh/projects/Hallucination-detection/evaluation_results/
+    full_report.txt
+    full_evaluation.png
+    pipeline_results.csv
+
+  Use these results in your MSc project report.
+============================================================
+⚠ pip install evaluate rouge-score
+============================================================
+  Phase 6 — Correction Engine
+============================================================
+
+   Device : CPU (intentional — avoids VRAM conflict)
+   Model  : google/flan-t5-small (77M params)
+   Reason : GPU held by retriever + evaluate imports
+   Samples: 10000 training samples
+   Time   : ~15-20 min per epoch on CPU
+
+   GPU available (NVIDIA GeForce RTX 3050 Laptop GPU) but intentionally NOT used
+   GPU free VRAM: 2.55 GB (occupied by other models)
+
+--- Loading dataset ---
+   Train: 9000 | Val: 1000
+
+--- Loading tokenizer ---
+   Tokenizer loaded
+
+   Train batches: 2250 | Val batches: 125
+
+--- Loading Flan-T5-small on CPU ---
+Loading weights: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 190/190 [00:00<00:00, 12003.04it/s]
+The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+   Parameters : 76,961,152
+   Device     : cpu
+
+--- Training config ---
+   Epochs      : 3 (patience=2)
+   Eff. batch  : 32
+   LR          : 3e-05
+   Input len   : 128 | Output len: 64
+
+============================================================
+  TRAINING STARTED (CPU — no VRAM conflicts)
+============================================================
+
+============================================================
+  Epoch 1/3
+============================================================
+   Ep 1 | Step  100/2250 (4%) | Loss: 3.5434 | LR: 8.57e-06
+   Ep 1 | Step  200/2250 (9%) | Loss: 3.5202 | LR: 1.79e-05
+   Ep 1 | Step  300/2250 (13%) | Loss: 3.4811 | LR: 2.64e-05
+   Ep 1 | Step  400/2250 (18%) | Loss: 3.4411 | LR: 2.97e-05
+   Ep 1 | Step  500/2250 (22%) | Loss: 3.4069 | LR: 2.93e-05
+   Ep 1 | Step  600/2250 (27%) | Loss: 3.3824 | LR: 2.88e-05
+   Ep 1 | Step  700/2250 (31%) | Loss: 3.3331 | LR: 2.83e-05
+   Ep 1 | Step  800/2250 (36%) | Loss: 3.3078 | LR: 2.78e-05
+   Ep 1 | Step  900/2250 (40%) | Loss: 3.2842 | LR: 2.74e-05
+   Ep 1 | Step 1000/2250 (44%) | Loss: 3.2669 | LR: 2.69e-05
+   Ep 1 | Step 1100/2250 (49%) | Loss: 3.2487 | LR: 2.64e-05
+   Ep 1 | Step 1200/2250 (53%) | Loss: 3.2448 | LR: 2.60e-05
+   Ep 1 | Step 1300/2250 (58%) | Loss: 3.2362 | LR: 2.55e-05
+   Ep 1 | Step 1400/2250 (62%) | Loss: 3.2262 | LR: 2.50e-05
+   Ep 1 | Step 1500/2250 (67%) | Loss: 3.2200 | LR: 2.46e-05
+   Ep 1 | Step 1600/2250 (71%) | Loss: 3.2093 | LR: 2.41e-05
+   Ep 1 | Step 1700/2250 (76%) | Loss: 3.2062 | LR: 2.36e-05
+   Ep 1 | Step 1800/2250 (80%) | Loss: 3.2016 | LR: 2.31e-05
+   Ep 1 | Step 1900/2250 (84%) | Loss: 3.1943 | LR: 2.27e-05
+   Ep 1 | Step 2000/2250 (89%) | Loss: 3.1861 | LR: 2.22e-05
+   Ep 1 | Step 2100/2250 (93%) | Loss: 3.1775 | LR: 2.18e-05
+   Ep 1 | Step 2200/2250 (98%) | Loss: 3.1737 | LR: 2.13e-05
+
+  Epoch 1: Train=3.1702 | Val=2.8125
+
+  Sample corrections:
+    Generated : Bayern Munich beat Eintracht Frankfurt 3-0. Lewandowski netting both goals and boosting his chances 
+    Reference : Robert Lewandowski scored twice as Bayern Munich claimed 3-0 victory. Thomas Muller scored with eigh
+
+    Generated : Facebook is the most popular social media platform among teenagers. The survey found that Facebook a
+    Reference : 92 percent of US teens go online daily - and 24% are online constantly. Instagram and Snapchat popul
+
+  ⚠ No improvement (1/2)
+
+============================================================
+  Epoch 2/3
+============================================================
+   Ep 2 | Step  100/2250 (4%) | Loss: 2.9925 | LR: 2.06e-05
+   Ep 2 | Step  200/2250 (9%) | Loss: 2.9840 | LR: 2.01e-05
+   Ep 2 | Step  300/2250 (13%) | Loss: 2.9948 | LR: 1.97e-05
+   Ep 2 | Step  400/2250 (18%) | Loss: 3.0240 | LR: 1.92e-05
+   Ep 2 | Step  500/2250 (22%) | Loss: 3.0237 | LR: 1.87e-05
+   Ep 2 | Step  600/2250 (27%) | Loss: 3.0174 | LR: 1.82e-05
+   Ep 2 | Step  700/2250 (31%) | Loss: 3.0378 | LR: 1.78e-05
+   Ep 2 | Step  800/2250 (36%) | Loss: 3.0415 | LR: 1.73e-05
+   Ep 2 | Step  900/2250 (40%) | Loss: 3.0400 | LR: 1.69e-05
+   Ep 2 | Step 1000/2250 (44%) | Loss: 3.0272 | LR: 1.64e-05
+   Ep 2 | Step 1100/2250 (49%) | Loss: 3.0296 | LR: 1.59e-05
+   Ep 2 | Step 1200/2250 (53%) | Loss: 3.0211 | LR: 1.54e-05
+   Ep 2 | Step 1300/2250 (58%) | Loss: 3.0190 | LR: 1.50e-05
+   Ep 2 | Step 1400/2250 (62%) | Loss: 3.0206 | LR: 1.45e-05
+   Ep 2 | Step 1500/2250 (67%) | Loss: 3.0224 | LR: 1.40e-05
+   Ep 2 | Step 1600/2250 (71%) | Loss: 3.0200 | LR: 1.36e-05
+   Ep 2 | Step 1700/2250 (76%) | Loss: 3.0189 | LR: 1.31e-05
+   Ep 2 | Step 1800/2250 (80%) | Loss: 3.0206 | LR: 1.26e-05
+   Ep 2 | Step 1900/2250 (84%) | Loss: 3.0209 | LR: 1.22e-05
+   Ep 2 | Step 2000/2250 (89%) | Loss: 3.0201 | LR: 1.17e-05
+   Ep 2 | Step 2100/2250 (93%) | Loss: 3.0184 | LR: 1.12e-05
+   Ep 2 | Step 2200/2250 (98%) | Loss: 3.0188 | LR: 1.07e-05
+
+  Epoch 2: Train=3.0179 | Val=2.7785
+
+  Sample corrections:
+    Generated : Bayern Munich beat Eintracht Frankfurt 3-0. Lewandowski netting both goals and boosting his chances 
+    Reference : Robert Lewandowski scored twice as Bayern Munich claimed 3-0 victory. Thomas Muller scored with eigh
+
+    Generated : Facebook is the most popular social media platform among teenagers. The survey found that most teens
+    Reference : 92 percent of US teens go online daily - and 24% are online constantly. Instagram and Snapchat popul
+
+  ⚠ No improvement (2/2)
+  🛑 Early stopping
+Writing model shards: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  3.66it/s]
+
+✅ Final model saved: ./corrector_model/final
+✅ Results saved
+✅ Plot saved
+
+--- Testing Correction Engine ---
+
+  1. ❌ Albert Einstein invented the telephone.
+     ✅ Alexander Graham Bell invented the telephone
+
+  2. ❌ The Amazon is the longest river in the world.
+     ✅ 6,650 km.
+
+  3. ❌ Shakespeare was born in London.
+     ✅ Stratford-upon-Avon
+
+  4. ❌ Water boils at 50 degrees Celsius.
+     ✅ 100 degrees Celsius.
+
+  5. ❌ 1 liter is equal to 1200 ml.
+     ✅ 1000 milliliters
+
+  6. ❌ Domino's is a sushi restaurant.
+     ✅ Domino's Pizza
+
+============================================================
+  PHASE 6 COMPLETE | Best ROUGE-L: 0.00
+  Model: /home/animesh/projects/Hallucination-detection/corrector_model/best
+============================================================
+

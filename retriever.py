@@ -41,25 +41,25 @@ warnings.filterwarnings("ignore")
 
 CONFIG = {
     # Wikipedia settings
-    "language"        : "en",
-    "user_agent"      : "HallucinationDetectionProject/1.0",
+    "language"           : "en",
+    "user_agent"         : "HallucinationDetectionProject/1.0",
 
     # How many Wikipedia search results to consider
     "max_search_results" : 3,
 
     # How many sentences to return as evidence
-    "max_sentences"   : 5,
+    "max_sentences"      : 5,
 
     # Sentence embedding model for semantic search
     # Small and fast — good for 4GB GPU
-    "embedding_model" : "all-MiniLM-L6-v2",
+    "embedding_model"    : "all-MiniLM-L6-v2",
 
     # Cache file — saves Wikipedia results so we don't
     # fetch the same page twice (saves time and API calls)
-    "cache_file"      : "./retriever_cache.json",
+    "cache_file"         : "./retriever_cache.json",
 
     # Timeout for Wikipedia requests in seconds
-    "timeout"         : 10,
+    "timeout"            : 10,
 }
 
 # =============================================================
@@ -262,7 +262,7 @@ def get_most_relevant_sentences(claim, page_text, top_k=5):
     # Shape: [num_sentences, 384]
     sentence_embeddings = embedder.encode(
         sentences,
-        convert_to_numpy = True,
+        convert_to_numpy  = True,
         show_progress_bar = False
     )
 
@@ -270,7 +270,7 @@ def get_most_relevant_sentences(claim, page_text, top_k=5):
     # Shape: [1, 384]
     claim_embedding = embedder.encode(
         [claim],
-        convert_to_numpy = True,
+        convert_to_numpy  = True,
         show_progress_bar = False
     )
 
@@ -462,7 +462,7 @@ if __name__ == "__main__":
     print(f"  Cache saved to: {os.path.abspath(CONFIG['cache_file'])}")
     print("=" * 60)
 
-    # ── SINGLE CLAIM DEMO ─────────────────────────────────
+    # ── INTERACTIVE DEMO ──────────────────────────────────────
     print("\n\n--- Interactive Demo ---")
     print("Enter a statement to find Wikipedia evidence")
     print("(Press Ctrl+C to exit)\n")

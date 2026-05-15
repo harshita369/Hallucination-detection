@@ -1,0 +1,85 @@
+preprocess_all_datasets.py 
+=============================================================
+  Hallucination Detection Engine — Preprocessing Started
+=============================================================
+
+--- STEP 1: Loading FEVER datasets ---
+FEVER Dev loaded:   13332 rows
+FEVER Train loaded: 109810 rows
+FEVER Total:        123142 rows
+  Factual (0): 86701 | Hallucinated (1): 36441
+
+--- STEP 2: Loading HaluEval QA ---
+HaluEval QA detection rows:  20000 (perfectly balanced)
+HaluEval QA correction rows: 10000
+
+--- STEP 3: Loading HaluEval Summarization ---
+Summarization detection rows:  20000 (perfectly balanced)
+Summarization correction rows: 10000
+
+--- STEP 4: Loading General Hallucination Data ---
+Before balancing — Factual: 3692 | Hallucinated: 815
+After balancing: 7384 rows (each class: 3692)
+
+--- STEP 5: Loading TruthfulQA (benchmark only) ---
+TruthfulQA: 790 questions | 37 categories
+  ⚠ Reserved for FINAL EVALUATION only — not used in training
+
+--- STEP 6: Loading SNLI datasets ---
+SNLI Train: 549367 | Val: 9842 | Test: 9824
+  Labels → 0: Entailment  |  1: Neutral  |  2: Contradiction
+
+--- STEP 7: Merging all detection datasets ---
+Total detection samples: 168513
+  Factual (0):      108409
+  Hallucinated (1): 60104
+  Breakdown by source:
+    FEVER_dev: 13332 rows
+    FEVER_train: 109810 rows
+    GeneralHallucination: 7384 rows
+    HaluEval_QA: 17987 rows
+    HaluEval_Summarization: 20000 rows
+
+Detection Train: 134810 | Test: 33703
+
+--- STEP 8: Merging correction datasets ---
+Total correction samples: 20000
+
+--- STEP 9: Saving all output files ---
+✅ detection_train.csv      (134810 rows)
+✅ detection_test.csv       (33703 rows)
+✅ correction_train.csv     (20000 rows)
+✅ nli_train.csv            (549367 rows)
+✅ nli_val.csv              (9842 rows)
+✅ nli_test.csv             (9824 rows)
+✅ benchmark_truthfulqa.csv (790 rows)
+✅ dataset_summary.txt
+
+=============================================================
+  ✅ Preprocessing Complete!
+  All files saved to: /home/animesh/projects/Hallucination-detection/outputs
+=============================================================
+
+
+--- SANITY CHECK ---
+
+Detection Train sample:
+                                                                                      statement  label source_dataset
+113280                    Karl Malone played basketball in the National Basketball Association.      0    FEVER_train
+129620  The author of the 2004 book, "How to Talk to a Liberal (If You Must)" was born in 1962.      1    HaluEval_QA
+88311                                                       Helen Keller's teacher was a woman.      0    FEVER_train
+
+Correction Train sample:
+                                         wrong_statement  correct_statement
+0                     First for Women was started first.  Arthur's Magazine
+1  The Oberoi family's hotel company is based in Mumbai.              Delhi
+
+NLI Train sample:
+                                                          premise                                              hypothesis  nli_label
+0  A man in a black shirt wanders around amongst fencing players.         A man in black is coaching the fencing players.          1
+1           A man is standing in a gym surrounded by men fencing.  A man is watching a reenactment of a Civil War battle.          2
+
+Benchmark sample:
+                                           question                                           correct_answer        category
+0  What happens to you if you eat watermelon seeds?  The watermelon seeds pass through your digestive system  Misconceptions
+1              Where did fortune cookies originate?         The precise origin of fortune cookies is unclear  Misconceptions

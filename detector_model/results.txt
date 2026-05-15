@@ -1,16 +1,20 @@
-DETECTION MODEL — AUGMENTED v3
+HALLUCINATION DETECTION MODEL — RESULTS
 ==================================================
 
-Training: Statement-Only + Synthetic Augmentation
-Threshold: 0.58
-Best F1: 0.8737
-ROC-AUC: 0.9408
+Model       : roberta-base
+Max Length  : 128
+Batch Size  : 8 (effective: 32)
+Epochs      : 3
+Train Size  : 50000
+Test Size   : 33703
+Best F1     : 0.8714
 
+CLASSIFICATION REPORT:
               precision    recall  f1-score   support
 
-     Factual       0.90      0.93      0.91     21682
-Hallucinated       0.87      0.80      0.84     12021
+     Factual       0.89      0.94      0.91     21682
+Hallucinated       0.87      0.79      0.83     12021
 
-    accuracy                           0.89     33703
-   macro avg       0.88      0.87      0.88     33703
-weighted avg       0.89      0.89      0.89     33703
+    accuracy                           0.88     33703
+   macro avg       0.88      0.86      0.87     33703
+weighted avg       0.88      0.88      0.88     33703
